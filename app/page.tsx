@@ -75,6 +75,20 @@ export default function InvitationPage() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    // Intentar reproducir apenas cargue
+    if (audioRef.current) {
+      audioRef.current.play()
+        .then(() => {
+          setIsPlaying(true); // Si el navegador lo permite, cambiamos el estado a true
+        })
+        .catch((error) => {
+          console.log("El navegador bloqueó el autoplay. El usuario debe interactuar primero.");
+          setIsPlaying(false);
+        });
+    }
+  }, []);
+
   const handleRSVP = (e: React.FormEvent) => {
     e.preventDefault();
     alert("RSVP Submitted Successfully!");
@@ -96,9 +110,9 @@ export default function InvitationPage() {
 
   return (
     <main className="relative min-h-screen bg-[#FFFFF0] text-[#2F4F4F] font-sans">
-      <audio ref={audioRef} loop src="/music/marry-me-train.mp3" />
-
-      <button
+      <audio ref={audioRef} autoPlay loop src="/music/marry-me-train.mp3" />
+      
+      <button 
         onClick={togglePlay}
         className="fixed bottom-6 right-6 z-50 bg-[#047857] text-[#FFFFF0] p-4 rounded-full shadow-2xl hover:bg-[#064e3b] transition-all transform hover:scale-110 flex items-center justify-center"
       >
