@@ -231,20 +231,28 @@ export default function InvitationPage() {
         </section>
       </div>
 
-      <section className="relative h-[200vh] w-full z-30 -mt-[100vh]">
+      <section className="relative h-[150vh] w-full z-30">
         <div className="sticky top-0 h-[100dvh] w-full overflow-hidden shadow-[0_-30px_60px_rgba(0,0,0,0.8)]">
-          <Image
-            src="/img/IMG_4319.webp"
-            alt="Schedule Background"
-            fill
-            sizes="100vw"
-            className="object-cover brightness-50"
-          />
+          <motion.div
+            initial={{ scale: 1.1 }}
+            whileInView={{ scale: 1 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+            className="absolute inset-0"
+          >
+            <Image
+              src="/img/IMG_4319.webp"
+              alt="Schedule Background"
+              fill
+              sizes="100vw"
+              className="object-cover brightness-50"
+            />
+          </motion.div>
 
           <div className="absolute inset-0 flex items-center justify-center p-4">
             <motion.div 
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 100, scale: 0.9 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.8, type: "spring", bounce: 0.3 }}
               viewport={{ once: false, amount: 0.3 }}
               className="relative w-full max-w-lg bg-[#FFFFF0] rounded-2xl shadow-2xl overflow-hidden p-6 md:p-10"
             >
@@ -254,9 +262,14 @@ export default function InvitationPage() {
               ></div>
 
               <div className="relative z-10">
-                <h2 className={`${greatVibes.className} text-5xl md:text-6xl text-center text-[#9C7C38] mb-8 drop-shadow-sm`}>
+                <motion.h2 
+                  initial={{ opacity: 0, y: -20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.6 }}
+                  className={`${greatVibes.className} text-5xl md:text-6xl text-center text-[#9C7C38] mb-8 drop-shadow-sm`}
+                >
                   Itinerary
-                </h2>
+                </motion.h2>
 
                 <div className="flex flex-col gap-6 md:gap-8 mb-8">
                   {[
@@ -265,25 +278,39 @@ export default function InvitationPage() {
                     { title: "Dinner", time: "6:00 PM - 8:00 PM", icon: Utensils },
                     { title: "Formalities", time: "9:00 PM", icon: Sparkles }
                   ].map((item, index) => (
-                    <div key={index} className="flex items-center justify-between border-b border-[#9C7C38]/20 pb-4">
+                    <motion.div 
+                      key={index} 
+                      initial={{ opacity: 0, x: -50 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3 + (index * 0.15), type: "spring" }}
+                      className="flex items-center justify-between border-b border-[#9C7C38]/20 pb-4"
+                    >
                       <span className={`${greatVibes.className} text-3xl md:text-4xl text-[#9C7C38] w-[40%] text-left drop-shadow-sm`}>
                         {item.title}
                       </span>
-                      <div className="w-[20%] flex justify-center">
+                      <motion.div 
+                        whileHover={{ scale: 1.2, rotate: 10 }}
+                        className="w-[20%] flex justify-center"
+                      >
                         <item.icon className="w-6 h-6 md:w-8 md:h-8 text-[#9C7C38] stroke-[1.5]" />
-                      </div>
+                      </motion.div>
                       <span className="text-sm md:text-base font-serif text-[#9C7C38] w-[40%] text-right uppercase tracking-[0.15em] md:tracking-[0.2em]">
                         {item.time}
                       </span>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
 
-                <div className="bg-[#047857] text-[#FFFFF0] p-4 md:p-5 rounded-xl text-center shadow-lg">
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.9, duration: 0.5 }}
+                  className="bg-[#047857] text-[#FFFFF0] p-4 md:p-5 rounded-xl text-center shadow-lg"
+                >
                   <p className="text-xs md:text-sm font-light uppercase tracking-widest leading-relaxed">
                     The ceremony and reception will be held at the same location.
                   </p>
-                </div>
+                </motion.div>
               </div>
             </motion.div>
           </div>
@@ -291,8 +318,13 @@ export default function InvitationPage() {
       </section>
 
       <section className="relative h-[150vh] w-full z-40">
-          <div className="sticky top-0 h-[100dvh] w-full overflow-hidden shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
-            {/* Imagen de fondo de la Villa */}
+        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
+          <motion.div
+            initial={{ scale: 1.1 }}
+            whileInView={{ scale: 1 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+            className="absolute inset-0"
+          >
             <Image
               src="/img/villa.webp"
               alt="Villa Punta Del Cielo Background"
@@ -300,91 +332,208 @@ export default function InvitationPage() {
               sizes="100vw"
               className="object-cover brightness-50"
             />
+          </motion.div>
 
-            <div className="absolute inset-0 flex items-center justify-center p-4">
-              <motion.div 
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false, amount: 0.3 }}
-                className="relative w-full max-w-lg bg-[#047857] rounded-2xl shadow-2xl overflow-hidden p-8 md:p-12 border border-[#FFD700]/30"
-              >
-                {/* Textura de papel sobre el fondo verde */}
-                <div 
-                  className="absolute inset-0 opacity-15 pointer-events-none bg-cover bg-center mix-blend-overlay"
-                  style={{ backgroundImage: "url('/img/hoja.webp')" }}
-                ></div>
+          <div className="absolute inset-0 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0, y: 100, rotateX: 10 }}
+              whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+              transition={{ duration: 0.8, type: "spring", bounce: 0.3 }}
+              viewport={{ once: false, amount: 0.3 }}
+              className="relative w-full max-w-lg bg-[#047857] rounded-2xl shadow-2xl overflow-hidden p-8 md:p-12 border border-[#FFD700]/30"
+            >
+              <div 
+                className="absolute inset-0 opacity-15 pointer-events-none bg-cover bg-center mix-blend-overlay"
+                style={{ backgroundImage: "url('/img/hoja.webp')" }}
+              ></div>
 
-                <div className="relative z-10 flex flex-col items-center text-center">
+              <div className="relative z-10 flex flex-col items-center text-center">
+                
+                <div className="mb-10 w-full border-b border-[#FFD700]/20 pb-10">
+                  <motion.h2 
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.2, type: "spring" }}
+                    className={`${greatVibes.className} text-5xl md:text-6xl text-[#FFD700] mb-4 drop-shadow-sm leading-tight`}
+                  >
+                    Dress Code
+                  </motion.h2>
+                  <motion.p 
+                    initial={{ opacity: 0, x: -30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="text-2xl md:text-3xl font-serif text-[#FFFFF0] uppercase tracking-wider mb-2"
+                  >
+                    Formal Attire
+                  </motion.p>
+                  <motion.p 
+                    initial={{ opacity: 0, x: 30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.5 }}
+                    className="text-xs md:text-sm font-light text-[#FFFFF0]/80 px-4 leading-relaxed italic"
+                  >
+                    Please dress formally to celebrate with us.
+                  </motion.p>
+                </div>
+
+                <div className="w-full">
+                  <motion.h2 
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.6, type: "spring" }}
+                    className={`${greatVibes.className} text-5xl md:text-6xl text-[#FFD700] mb-4 drop-shadow-sm leading-tight`}
+                  >
+                    Event Location
+                  </motion.h2>
+                  <motion.p 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.7 }}
+                    className="text-xl md:text-2xl font-serif text-[#FFFFF0] uppercase tracking-wide mb-2"
+                  >
+                    Villa Punta Del Cielo
+                  </motion.p>
+                  <motion.p 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8 }}
+                    className="text-sm md:text-base font-light text-[#FFFFF0]/90 mb-10 leading-relaxed max-w-xs mx-auto"
+                  >
+                    494 N. Las Palmas Ave<br />
+                    Los Angeles, CA 90004
+                  </motion.p>
+
+                  <motion.a 
+                    href="https://maps.app.goo.gl/jU6sRkj59sG6jeVQ8?g_st=ic" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    whileHover={{ scale: 1.05 }} 
+                    whileTap={{ scale: 0.95 }} 
+                    transition={{ delay: 0.9, type: "spring" }}
+                    className="w-full inline-flex items-center justify-center gap-3 bg-[#FFD700] text-[#064e3b] px-8 py-4 rounded-full font-bold text-lg shadow-xl hover:bg-[#FFFFF0]"
+                  >
+                    <MapPin size={24} className="text-[#064e3b]" />
+                    Open in Google Maps
+                  </motion.a>
+                </div>
+
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      <section className="relative h-[150vh] w-full z-50">
+        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
+          
+          {/* Imagen de fondo animada */}
+          <motion.div
+            initial={{ scale: 1.1 }}
+            whileInView={{ scale: 1 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+            className="absolute inset-0"
+          >
+            <Image
+              src="/img/IMG_4148.webp"
+              alt="Accommodation Background"
+              fill
+              sizes="100vw"
+              className="object-cover brightness-50"
+            />
+          </motion.div>
+
+          <div className="absolute inset-0 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0, y: 100, rotateX: -10 }}
+              whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+              transition={{ duration: 0.8, type: "spring", bounce: 0.3 }}
+              viewport={{ once: false, amount: 0.3 }}
+              className="relative w-full max-w-4xl bg-[#047857] rounded-2xl shadow-2xl overflow-hidden p-6 md:p-12 border border-[#FFD700]/30"
+            >
+              {/* Textura de papel sobre el fondo verde */}
+              <div 
+                className="absolute inset-0 opacity-15 pointer-events-none bg-cover bg-center mix-blend-overlay"
+                style={{ backgroundImage: "url('/img/hoja.webp')" }}
+              ></div>
+
+              <div className="relative z-10 flex flex-col items-center text-center">
+                
+                <motion.h2 
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.2, type: "spring" }}
+                  className={`${greatVibes.className} text-5xl md:text-7xl text-[#FFD700] mb-8 md:mb-12 drop-shadow-sm leading-tight`}
+                >
+                  Accommodation
+                </motion.h2>
+
+                <div className="grid md:grid-cols-2 gap-6 md:gap-10 w-full">
                   
-                  {/* Sección Dress Code con datos del PDF */}
-                  <div className="mb-10 w-full border-b border-[#FFD700]/20 pb-10">
-                    <h2 className={`${greatVibes.className} text-5xl md:text-6xl text-[#FFD700] mb-4 drop-shadow-sm leading-tight`}>
-                      Dress Code
-                    </h2>
-                    <p className="text-2xl md:text-3xl font-serif text-[#FFFFF0] uppercase tracking-wider mb-2">
-                      Formal Attire
-                    </p>
-                    <p className="text-xs md:text-sm font-light text-[#FFFFF0]/80 px-4 leading-relaxed italic">
-                      Please dress formally to celebrate with us.
-                    </p>
-                  </div>
-
-                  {/* Sección Event Location con datos del PDF */}
-                  <div className="w-full">
-                    <h2 className={`${greatVibes.className} text-5xl md:text-6xl text-[#FFD700] mb-4 drop-shadow-sm leading-tight`}>
-                      Event Location
-                    </h2>
-                    <p className="text-xl md:text-2xl font-serif text-[#FFFFF0] uppercase tracking-wide mb-2">
-                      Villa Punta Del Cielo
-                    </p>
-                    <p className="text-sm md:text-base font-light text-[#FFFFF0]/90 mb-10 leading-relaxed max-w-xs mx-auto">
-                      494 N. Las Palmas Ave<br />
-                      Los Angeles, CA 90004
-                    </p>
-
-                    {/* Botón con el enlace de Maps proporcionado */}
+                  {/* HOTEL 1 (Datos de tu captura) */}
+                  <motion.div 
+                    initial={{ opacity: 0, x: -50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4, type: "spring" }}
+                    className="bg-[#FFFFF0]/10 backdrop-blur-sm rounded-xl p-6 border border-[#FFD700]/20 flex flex-col justify-between h-full shadow-lg"
+                  >
+                    <div>
+                      <h3 className="text-xl md:text-2xl font-serif text-[#FFFFF0] uppercase tracking-wide mb-3">
+                        WoodSpring Suites Bakersfield East
+                      </h3>
+                      <p className="text-sm font-light text-[#FFFFF0]/80 mb-6 leading-relaxed">
+                        8311 E Brundage Ln<br />
+                        Bakersfield, CA 93307
+                      </p>
+                    </div>
                     <motion.a 
-                      href="https://maps.app.goo.gl/jU6sRkj59sG6jeVQ8?g_st=ic" 
+                      href="https://maps.app.goo.gl/yszy7nsFUFFTfLWC8?g_st=ic" 
                       target="_blank"
                       rel="noopener noreferrer"
                       whileHover={{ scale: 1.05 }} 
                       whileTap={{ scale: 0.95 }} 
-                      className="w-full inline-flex items-center justify-center gap-3 bg-[#FFD700] text-[#064e3b] px-8 py-4 rounded-full font-bold text-lg transition-all shadow-xl hover:bg-[#FFFFF0]"
+                      className="w-full inline-flex items-center justify-center gap-2 bg-[#FFD700] text-[#064e3b] px-6 py-3 rounded-full font-bold text-sm transition-all shadow-xl hover:bg-[#FFFFF0]"
                     >
-                      <MapPin size={24} className="text-[#064e3b]" />
-                      Open in Google Maps
+                      <MapPin size={18} className="text-[#064e3b]" />
+                      View on Map
                     </motion.a>
-                  </div>
-
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-      <section className="py-24 px-6 bg-[#FFFFF0]">
-        <motion.div variants={fadeIn} initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.2 }} className="max-w-5xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-serif text-[#047857] mb-16">Accommodation</h2>
-
-          <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.2 }} className="grid md:grid-cols-2 gap-8">
-            {[1, 2].map((hotel) => (
-              <motion.div key={hotel} variants={fadeIn} whileHover={{ y: -10 }} className="bg-white rounded-2xl overflow-hidden shadow-xl border border-gray-100">
-                <div className="h-64 bg-gray-200 relative overflow-hidden">
-                  <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.5 }} className="w-full h-full">
-                    <Image src={`/img/IMG_4148.webp`} alt={`Hotel ${hotel}`} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
                   </motion.div>
+
+                  {/* HOTEL 2 (Enlace de tu captura) */}
+                  <motion.div 
+                    initial={{ opacity: 0, x: 50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.6, type: "spring" }}
+                    className="bg-[#FFFFF0]/10 backdrop-blur-sm rounded-xl p-6 border border-[#FFD700]/20 flex flex-col justify-between h-full shadow-lg"
+                  >
+                    <div>
+                      <h3 className="text-xl md:text-2xl font-serif text-[#FFFFF0] uppercase tracking-wide mb-3">
+                        Hampton Inn & Suites
+                      </h3>
+                      <p className="text-sm font-light text-[#FFFFF0]/80 mb-6 leading-relaxed">
+                        7941 E Brundage Ln<br />
+                        Bakersfield, CA
+                      </p>
+                    </div>
+                    <motion.a 
+                      href="https://maps.app.goo.gl/LaDfc5VCHHQD646x6?g_st=ic" 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ scale: 1.05 }} 
+                      whileTap={{ scale: 0.95 }} 
+                      className="w-full inline-flex items-center justify-center gap-2 bg-[#FFD700] text-[#064e3b] px-6 py-3 rounded-full font-bold text-sm transition-all shadow-xl hover:bg-[#FFFFF0]"
+                    >
+                      <MapPin size={18} className="text-[#064e3b]" />
+                      View on Map
+                    </motion.a>
+                  </motion.div>
+
                 </div>
-                <div className="p-8">
-                  <h3 className="text-2xl font-bold text-[#047857] mb-2">Hotel Suggestion {hotel}</h3>
-                  <p className="text-gray-600 mb-6 line-clamp-2">Recommended accommodation for our guests during the wedding weekend.</p>
-                  <button className="w-full py-3 border border-[#047857] text-[#047857] rounded-lg hover:bg-[#047857] hover:text-white transition-colors flex justify-center items-center gap-2">
-                    <MapPin size={20} /> View Map
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </motion.div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
       </section>
 
       <section className="py-24 px-6 bg-[#047857] text-[#FFFFF0] text-center overflow-hidden">
