@@ -242,59 +242,59 @@ export default function InvitationPage() {
           </div>
         </section>
 
-        <section ref={timerRef} className="relative h-[200vh] w-full z-20 -mt-[100vh]">
-          <div className="sticky top-0 h-[100dvh] w-full overflow-hidden shadow-[0_-30px_60px_rgba(0,0,0,0.8)]">
-            <Image
-              src="/img/IMG_4223.webp"
-              alt="Timer Background"
-              fill
-              sizes="100vw"
-              className="object-cover brightness-[0.45]"
-            />
+<section ref={timerRef} className="relative h-[200vh] w-full z-20 -mt-[100vh]">
+        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden shadow-[0_-30px_60px_rgba(0,0,0,0.8)]">
+          <Image
+            src="/img/IMG_4223.webp"
+            alt="Timer Background"
+            fill
+            sizes="100vw"
+            className="object-cover brightness-[0.45]"
+          />
 
-            {isMounted && (
-              <motion.div
-                style={{ opacity: timerOpacity, scale: timerScale }}
-                className="absolute inset-0 flex flex-col items-center justify-center text-[#FFFFF0] px-4 md:px-8"
+          {isMounted && (
+            <motion.div
+              style={{ opacity: timerOpacity, scale: timerScale }}
+              className="absolute inset-0 flex flex-col items-center justify-center text-[#FFFFF0] px-4 md:px-8"
+            >
+              <h2 className="text-2xl md:text-5xl font-serif mb-6 md:mb-10 text-[#FFD700] drop-shadow-md text-center uppercase tracking-[0.15em]">
+                October 24, 2026
+              </h2>
+
+              <div className="flex flex-row justify-center gap-3 md:gap-5 mb-8 md:mb-12 w-full max-w-4xl px-2">
+                {Object.entries(timeLeft).map(([unit, value]) => {
+                  const displayUnit = unit === 'days' ? 'Days' : unit === 'hours' ? 'Hrs' : unit === 'minutes' ? 'Mins' : 'Secs';
+                  return (
+                    <div
+                      key={unit}
+                      className="flex flex-col items-center justify-center bg-[#047857]/90 border border-[#FFD700]/30 backdrop-blur-sm w-[70px] h-[80px] md:w-[110px] md:h-[120px] rounded-lg shadow-2xl"
+                    >
+                      <span className="text-3xl md:text-5xl font-serif text-[#FFD700]">
+                        {value.toString().padStart(2, '0')}
+                      </span>
+                      <span className="text-[11px] md:text-sm font-serif mt-1 md:mt-2 text-[#FFFFF0] tracking-wider uppercase">
+                        {displayUnit}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <motion.a
+                href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Jennifer+%26+Armando+Wedding&dates=20261024T160000/20261024T230000&details=Join+us+to+celebrate+our+wedding+day!&location=7837+E+White+Ln%2C+Bakersfield%2C+CA+93307%2C+EE.+UU."
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.05, backgroundColor: "#FFD700", color: "#047857" }}
+                whileTap={{ scale: 0.95 }}
+                className="inline-flex items-center justify-center gap-2 border border-[#FFD700] text-[#FFD700] px-6 py-2 md:px-8 md:py-3 rounded-full font-serif text-sm md:text-lg transition-colors shadow-lg"
               >
-                <h2 className="text-2xl md:text-5xl font-serif mb-6 md:mb-10 text-[#FFD700] drop-shadow-md text-center uppercase tracking-[0.15em]">
-                  October 24, 2026
-                </h2>
-
-                <div className="flex flex-row justify-center gap-3 md:gap-5 mb-8 md:mb-12 w-full max-w-4xl px-2">
-                  {Object.entries(timeLeft).map(([unit, value]) => {
-                    const displayUnit = unit === 'days' ? 'Days' : unit === 'hours' ? 'Hrs' : unit === 'minutes' ? 'Mins' : 'Secs';
-                    return (
-                      <div
-                        key={unit}
-                        className="flex flex-col items-center justify-center bg-[#047857]/90 border border-[#FFD700]/30 backdrop-blur-sm w-[70px] h-[80px] md:w-[110px] md:h-[120px] rounded-lg shadow-2xl"
-                      >
-                        <span className="text-3xl md:text-5xl font-serif text-[#FFD700]">
-                          {value.toString().padStart(2, '0')}
-                        </span>
-                        <span className="text-[11px] md:text-sm font-serif mt-1 md:mt-2 text-[#FFFFF0] tracking-wider uppercase">
-                          {displayUnit}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                <motion.a
-                  href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Jennifer+%26+Armando+Wedding&dates=20261024T160000/20261024T230000"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.05, backgroundColor: "#FFD700", color: "#047857" }}
-                  whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center justify-center gap-2 border border-[#FFD700] text-[#FFD700] px-6 py-2 md:px-8 md:py-3 rounded-full font-serif text-sm md:text-lg transition-colors shadow-lg"
-                >
-                  <CalendarPlus size={18} className="md:w-[22px] md:h-[22px]" />
-                  Add to Calendar
-                </motion.a>
-              </motion.div>
-            )}
-          </div>
-        </section>
+                <CalendarPlus size={18} className="md:w-[22px] md:h-[22px]" />
+                Add to Calendar
+              </motion.a>
+            </motion.div>
+          )}
+        </div>
+      </section>
       </div>
 
       {/* --- ITINERARY SECTION --- */}
