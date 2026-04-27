@@ -40,7 +40,7 @@ export default function InvitationPage() {
 
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const timerRef = useRef<HTMLDivElement>(null);
+  //const timerRef = useRef<HTMLDivElement>(null);
   //const blurRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll();
@@ -50,15 +50,15 @@ export default function InvitationPage() {
     offset: ["start start", "end start"]
   });*/
 
-  const { scrollYProgress: timerScroll } = useScroll({
+  /*const { scrollYProgress: timerScroll } = useScroll({
     target: timerRef,
     offset: ["start end", "end start"]
-  });
+  });*/
 
   //const blurTransform = useTransform(blurScroll, [0, 1], ["blur(0px)", "blur(12px)"]);
   const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const timerOpacity = useTransform(timerScroll, [0.2, 0.5, 0.8, 1], [0, 1, 1, 0]);
-  const timerScale = useTransform(timerScroll, [0.2, 0.5, 1], [0.8, 1, 1.1]);
+  //const timerOpacity = useTransform(timerScroll, [0.2, 0.5, 0.8, 1], [0, 1, 1, 0]);
+  //const timerScale = useTransform(timerScroll, [0.2, 0.5, 1], [0.8, 1, 1.1]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -239,7 +239,7 @@ export default function InvitationPage() {
           </div>
         </section>
 
-<section ref={timerRef} className="relative h-[200vh] w-full z-20 -mt-[100vh]">
+        <section className="relative h-[200vh] w-full z-20 -mt-[100vh]">
         <div className="sticky top-0 h-[100dvh] w-full overflow-hidden shadow-[0_-30px_60px_rgba(0,0,0,0.8)]">
           <Image
             src="/img/IMG_4223.webp"
@@ -250,10 +250,7 @@ export default function InvitationPage() {
           />
 
           {isMounted && (
-            <motion.div
-              style={{ opacity: timerOpacity, scale: timerScale }}
-              className="absolute inset-0 flex flex-col items-center justify-center text-[#FFFFF0] px-4 md:px-8"
-            >
+            <div className="absolute inset-0 flex flex-col items-center justify-start pt-[15vh] md:pt-[20vh] text-[#FFFFF0] px-4 md:px-8">
               <h2 className="text-2xl md:text-5xl font-serif mb-6 md:mb-10 text-[#FFD700] drop-shadow-md text-center uppercase tracking-[0.15em]">
                 October 24, 2026
               </h2>
@@ -288,15 +285,15 @@ export default function InvitationPage() {
                 <CalendarPlus size={18} className="md:w-[22px] md:h-[22px]" />
                 Add to Calendar
               </motion.a>
-            </motion.div>
+            </div>
           )}
         </div>
       </section>
       </div>
 
-      {/* --- ITINERARY SECTION --- */}
-      <section className="relative h-[200vh] w-full z-30 -mt-[100vh]">
-        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden shadow-[0_-30px_60px_rgba(0,0,0,0.8)]">
+      <section className="relative h-[300vh] w-full z-30 -mt-[100vh]">
+        
+        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden shadow-[0_-30px_60px_rgba(0,0,0,0.8)] z-0">
           <motion.div
             initial={{ scale: 1.15 }}
             whileInView={{ scale: 1 }}
@@ -311,96 +308,99 @@ export default function InvitationPage() {
               className="object-cover brightness-50"
             />
           </motion.div>
-
-          <div className="absolute inset-0 flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              viewport={{ once: false, amount: 0.3 }}
-              className="relative w-full max-w-lg bg-[#FFFFF0] rounded-2xl shadow-2xl overflow-hidden p-6 md:p-10"
-            >
-              <div
-                className="absolute inset-0 opacity-15 pointer-events-none bg-cover bg-center"
-                style={{ backgroundImage: "url('/img/hoja.webp')" }}
-              ></div>
-
-              <div className="relative z-10">
-                <motion.h2
-                  initial={{ opacity: 0, y: -10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                  className={`${greatVibes.className} text-5xl md:text-6xl text-center text-[#9C7C38] mb-8 drop-shadow-sm`}
-                >
-                  Itinerary
-                </motion.h2>
-
-                <div className="flex flex-col gap-6 md:gap-8 mb-8">
-                  {[
-                    { title: "Ceremony", time: "4:00 PM", icon: Heart },
-                    { title: "Cocktail", time: "5:00 PM", icon: Wine },
-                    { title: "Dinner", time: "6:00 PM - 8:00 PM", icon: Utensils },
-                    { title: "Formalities", time: "9:00 PM", icon: Sparkles }
-                  ].map((item, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.4 + (index * 0.15), duration: 0.8, ease: "easeOut" }}
-                      className="flex items-center justify-between border-b border-[#9C7C38]/20 pb-4"
-                    >
-                      <span className={`${greatVibes.className} text-3xl md:text-4xl text-[#9C7C38] w-[40%] text-left drop-shadow-sm`}>
-                        {item.title}
-                      </span>
-                      <motion.div
-                        whileHover={{ scale: 1.1, rotate: 5 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className="w-[20%] flex justify-center"
-                      >
-                        <item.icon className="w-6 h-6 md:w-8 md:h-8 text-[#9C7C38] stroke-[1.5]" />
-                      </motion.div>
-                      <span className="text-sm md:text-base font-serif text-[#9C7C38] w-[40%] text-right uppercase tracking-[0.15em] md:tracking-[0.2em]">
-                        {item.time}
-                      </span>
-                    </motion.div>
-                  ))}
-                </div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                  className="bg-[#047857] text-[#FFFFF0] p-4 md:p-5 rounded-xl text-center shadow-lg"
-                >
-                  <p className="text-xs md:text-sm font-light uppercase tracking-widest leading-relaxed">
-                    The ceremony and reception will be held at the same location.
-                  </p>
-                </motion.div>
-              </div>
-            </motion.div>
-          </div>
         </div>
+
+        <div className="relative z-10 w-full h-[100dvh] bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: false, amount: 0.3 }}
+            className="relative w-full max-w-lg bg-[#FFFFF0] rounded-2xl shadow-2xl overflow-hidden p-6 md:p-10"
+          >
+            <div
+              className="absolute inset-0 opacity-15 pointer-events-none bg-cover bg-center"
+              style={{ backgroundImage: "url('/img/hoja.webp')" }}
+            ></div>
+
+            <div className="relative z-10">
+              <motion.h2
+                initial={{ opacity: 0, y: -10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                className={`${greatVibes.className} text-5xl md:text-6xl text-center text-[#9C7C38] mb-8 drop-shadow-sm`}
+              >
+                Itinerary
+              </motion.h2>
+
+              <div className="flex flex-col gap-6 md:gap-8 mb-8">
+                {[
+                  { title: "Ceremony", time: "4:00 PM", icon: Heart },
+                  { title: "Cocktail", time: "5:00 PM", icon: Wine },
+                  { title: "Dinner", time: "6:00 PM - 8:00 PM", icon: Utensils },
+                  { title: "Formalities", time: "9:00 PM", icon: Sparkles }
+                ].map((item, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 + (index * 0.15), duration: 0.8, ease: "easeOut" }}
+                    className="flex items-center justify-between border-b border-[#9C7C38]/20 pb-4"
+                  >
+                    <span className={`${greatVibes.className} text-3xl md:text-4xl text-[#9C7C38] w-[40%] text-left drop-shadow-sm`}>
+                      {item.title}
+                    </span>
+                    <motion.div
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="w-[20%] flex justify-center"
+                    >
+                      <item.icon className="w-6 h-6 md:w-8 md:h-8 text-[#9C7C38] stroke-[1.5]" />
+                    </motion.div>
+                    <span className="text-sm md:text-base font-serif text-[#9C7C38] w-[40%] text-right uppercase tracking-[0.15em] md:tracking-[0.2em]">
+                      {item.time}
+                    </span>
+                  </motion.div>
+                ))}
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                className="bg-[#047857] text-[#FFFFF0] p-4 md:p-5 rounded-xl text-center shadow-lg"
+              >
+                <p className="text-xs md:text-sm font-light uppercase tracking-widest leading-relaxed">
+                  The ceremony and reception will be held at the same location.
+                </p>
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+
+        <div className="relative w-full h-[100dvh] z-0 pointer-events-none"></div>
+
       </section>
 
       <section className="relative h-[200vh] w-full z-40 -mt-[100vh]">
         <div className="sticky top-0 h-[100dvh] w-full bg-[#047857] overflow-hidden shadow-[0_-30px_60px_rgba(0,0,0,0.8)]">
-          
-          <div 
+
+          <div
             className="absolute inset-0 opacity-15 pointer-events-none bg-cover bg-center mix-blend-overlay"
             style={{ backgroundImage: "url('/img/hoja.webp')" }}
           ></div>
 
           <div className="absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 z-10 overflow-y-auto no-scrollbar">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               viewport={{ once: false, amount: 0.2 }}
               className="w-full max-w-2xl flex flex-col items-center text-center gap-10 pt-10 pb-20"
             >
-              
+
               <div className="w-full flex flex-col items-center">
-                <motion.div 
+                <motion.div
                   initial={{ scale: 0, rotate: -10 }}
                   whileInView={{ scale: 1, rotate: 0 }}
                   transition={{ type: "spring", delay: 0.2, duration: 1 }}
@@ -413,8 +413,8 @@ export default function InvitationPage() {
                     className="object-contain"
                   />
                 </motion.div>
-                
-                <motion.h2 
+
+                <motion.h2
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.8 }}
@@ -422,8 +422,8 @@ export default function InvitationPage() {
                 >
                   Dress Code
                 </motion.h2>
-                
-                <motion.p 
+
+                <motion.p
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4, duration: 0.8 }}
@@ -431,8 +431,8 @@ export default function InvitationPage() {
                 >
                   Formal Attire
                 </motion.p>
-                
-                <motion.p 
+
+                <motion.p
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5, duration: 0.8 }}
@@ -497,7 +497,7 @@ export default function InvitationPage() {
                   Villa Punta Del Cielo
                 </motion.p>
 
-                <motion.p 
+                <motion.p
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5, duration: 0.8 }}
@@ -530,22 +530,22 @@ export default function InvitationPage() {
 
       <section className="relative h-[200vh] w-full z-50 -mt-[100vh]">
         <div className="sticky top-0 h-[100dvh] w-full bg-[#FFFFF0] overflow-hidden shadow-[0_-30px_60px_rgba(0,0,0,0.8)]">
-          
-          <div 
+
+          <div
             className="absolute inset-0 opacity-10 pointer-events-none bg-cover bg-center"
             style={{ backgroundImage: "url('/img/hoja.webp')" }}
           ></div>
 
           <div className="absolute inset-0 flex flex-col items-center justify-center p-4 z-10 overflow-y-auto no-scrollbar">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
               viewport={{ once: false, amount: 0.2 }}
               className="w-full max-w-5xl flex flex-col items-center text-center py-10"
             >
-              
-              <motion.h2 
+
+              <motion.h2
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2, type: "spring" }}
@@ -574,10 +574,10 @@ export default function InvitationPage() {
                   transition={{ duration: 0.8, ease: "easeInOut" }}
                   className="flex w-[200%]"
                 >
-                  
+
                   <div className="w-1/2 px-2 md:px-12 flex justify-center">
                     <div className="bg-white rounded-2xl overflow-hidden shadow-2xl border border-gray-100 flex flex-col w-full max-w-md transform transition-transform hover:scale-[1.02]">
-                      
+
                       <div className="h-48 md:h-64 bg-gray-200 relative overflow-hidden">
                         <Image
                           src="/img/h2.jpg"
@@ -597,12 +597,12 @@ export default function InvitationPage() {
                             Bakersfield, CA 93307
                           </p>
                         </div>
-                        <motion.a 
-                          href="https://maps.app.goo.gl/yszy7nsFUFFTfLWC8?g_st=ic" 
+                        <motion.a
+                          href="https://maps.app.goo.gl/yszy7nsFUFFTfLWC8?g_st=ic"
                           target="_blank"
                           rel="noopener noreferrer"
-                          whileHover={{ scale: 1.05 }} 
-                          whileTap={{ scale: 0.95 }} 
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
                           className="w-full py-3 border-2 border-[#047857] text-[#047857] rounded-lg hover:bg-[#047857] hover:text-white transition-colors flex justify-center items-center gap-2 font-bold shadow-md"
                         >
                           <MapPin size={20} /> View Map
@@ -613,7 +613,7 @@ export default function InvitationPage() {
 
                   <div className="w-1/2 px-2 md:px-12 flex justify-center">
                     <div className="bg-white rounded-2xl overflow-hidden shadow-2xl border border-gray-100 flex flex-col w-full max-w-md transform transition-transform hover:scale-[1.02]">
-                      
+
                       <div className="h-48 md:h-64 bg-gray-200 relative overflow-hidden">
                         <Image
                           src="/img/h1.jpg"
@@ -633,12 +633,12 @@ export default function InvitationPage() {
                             Bakersfield, CA 93307
                           </p>
                         </div>
-                        <motion.a 
-                          href="https://maps.app.goo.gl/LaDfc5VCHHQD646x6?g_st=ic" 
+                        <motion.a
+                          href="https://maps.app.goo.gl/LaDfc5VCHHQD646x6?g_st=ic"
                           target="_blank"
                           rel="noopener noreferrer"
-                          whileHover={{ scale: 1.05 }} 
-                          whileTap={{ scale: 0.95 }} 
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
                           className="w-full py-3 border-2 border-[#047857] text-[#047857] rounded-lg hover:bg-[#047857] hover:text-white transition-colors flex justify-center items-center gap-2 font-bold shadow-md"
                         >
                           <MapPin size={20} /> View Map
