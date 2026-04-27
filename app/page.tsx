@@ -41,21 +41,21 @@ export default function InvitationPage() {
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timerRef = useRef<HTMLDivElement>(null);
-  const blurRef = useRef<HTMLDivElement>(null);
+  //const blurRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll();
 
-  const { scrollYProgress: blurScroll } = useScroll({
+  /*const { scrollYProgress: blurScroll } = useScroll({
     target: blurRef,
     offset: ["start start", "end start"]
-  });
+  });*/
 
   const { scrollYProgress: timerScroll } = useScroll({
     target: timerRef,
     offset: ["start end", "end start"]
   });
 
-  const blurTransform = useTransform(blurScroll, [0, 1], ["blur(0px)", "blur(12px)"]);
+  //const blurTransform = useTransform(blurScroll, [0, 1], ["blur(0px)", "blur(12px)"]);
   const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const timerOpacity = useTransform(timerScroll, [0.2, 0.5, 0.8, 1], [0, 1, 1, 0]);
   const timerScale = useTransform(timerScroll, [0.2, 0.5, 1], [0.8, 1, 1.1]);
@@ -131,47 +131,43 @@ export default function InvitationPage() {
         {!hasEntered && (
           <motion.div
             initial={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 1.2, filter: "blur(10px)" }}
-            transition={{ duration: 1, ease: "easeInOut" }}
+            exit={{ opacity: 0, filter: "blur(10px)" }}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
             onClick={handleEnter}
             className="fixed inset-0 z-[100] bg-[#047857] flex flex-col items-center justify-center cursor-pointer overflow-hidden"
           >
             <motion.div
-              initial={{ scale: 0, rotate: -180 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ type: "spring", damping: 12, stiffness: 60, duration: 1.5 }}
-              className="flex flex-col items-center gap-10"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-col items-center gap-12"
             >
               <motion.div
                 animate={{ y: [0, -20, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                 className="relative w-48 h-48 md:w-64 md:h-64"
               >
                 <Image
                   src="/img/letras.png"
                   alt="J&A Initials"
                   fill
-                  className="object-contain drop-shadow-2xl"
+                  className="object-contain drop-shadow-2xl brightness-0 invert opacity-95"
                   priority
                 />
               </motion.div>
 
-              <div className="flex gap-3 md:gap-4">
+              <div className="flex gap-4 md:gap-5">
                 {["E", "N", "T", "E", "R"].map((letter, index) => (
                   <motion.span
                     key={index}
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: [0, -15, 0] }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{
-                      opacity: { duration: 0.5, delay: 1 + (index * 0.1) },
-                      y: {
-                        duration: 1.2,
-                        repeat: Infinity,
-                        delay: 1 + (index * 0.1),
-                        ease: "easeInOut"
-                      }
+                      duration: 1.2,
+                      delay: 0.8 + (index * 0.1),
+                      ease: [0.16, 1, 0.3, 1]
                     }}
-                    className="text-[#FFFFF0] text-2xl md:text-4xl font-serif tracking-[0.2em] uppercase font-semibold drop-shadow-xl"
+                    className="text-[#FFFFF0] text-xl md:text-2xl font-serif tracking-[0.4em] uppercase font-light drop-shadow-lg"
                   >
                     {letter}
                   </motion.span>
@@ -182,7 +178,7 @@ export default function InvitationPage() {
         )}
       </AnimatePresence>
 
-      <section className="relative h-[100dvh] w-full overflow-hidden flex flex-col items-center justify-center">
+      <section className="relative h-[100dvh] w-full overflow-hidden flex flex-col items-center justify-start">
         <div className="absolute inset-0 z-0">
           <Image
             src="/img/IMG_4095.webp"
@@ -194,13 +190,13 @@ export default function InvitationPage() {
           />
         </div>
 
-        <div className="z-10 text-center flex flex-col items-center justify-center px-4 w-full -translate-y-20 md:-translate-y-40">
+        <div className="absolute top-[8%] md:top-[15%] z-10 text-center flex flex-col items-center px-4 w-full">
           <motion.div
-            initial={{ opacity: 0, y: 100, scale: 0.9 }}
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
           >
-            <h1 className={`${greatVibes.className} text-[5.5rem] leading-none md:text-[10rem] text-[#FFFFF0] drop-shadow-lg mb-4 md:mb-6`}>
+            <h1 className={`${greatVibes.className} text-[3.2rem] md:text-[6.5rem] leading-[1.1] md:leading-none text-[#FFFFF0] drop-shadow-2xl`}>
               Jennifer <br className="md:hidden" /> <span className="text-[#FFD700]">&</span> <br className="md:hidden" /> Armando
             </h1>
           </motion.div>
@@ -228,17 +224,18 @@ export default function InvitationPage() {
       </section>
 
       <div className="relative w-full bg-[#FFFFF0]">
-        <section ref={blurRef} className="relative h-[200vh] w-full z-10">
+        <section className="relative h-[200vh] w-full z-10">
           <div className="sticky top-0 h-[100dvh] w-full overflow-hidden">
-            <motion.div style={{ filter: blurTransform }} className="relative w-full h-full">
+            <div className="relative w-full h-full">
               <Image
                 src="/img/IMG_4331.webp"
                 alt="Background 1"
                 fill
-                className="object-cover"
+                sizes="100vw"
+                className="object-cover object-[41%_center] md:object-center"
                 priority
               />
-            </motion.div>
+            </div>
           </div>
         </section>
 
