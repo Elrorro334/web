@@ -3,9 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform, Variants, AnimatePresence } from "framer-motion";
-import { Play, Pause, MapPin, CalendarPlus, Gift, Music, Heart, Wine, Utensils, Sparkles } from "lucide-react";
+import { Play, Pause, MapPin, CalendarPlus, Gift, Music, Heart, Wine, Utensils, Sparkles, X, ChevronLeft, ChevronRight, Camera } from "lucide-react";
 import { Great_Vibes } from 'next/font/google';
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 
 const greatVibes = Great_Vibes({
@@ -37,6 +36,40 @@ export default function InvitationPage() {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [currentImgIndex, setCurrentImgIndex] = useState(0);
+
+  const galleryImages = [
+    "IMG_4127.webp",
+    "IMG_4148.webp",
+    "IMG_4176.webp",
+    "IMG_4181.webp",
+    "IMG_4185.webp",
+    "IMG_4191.webp",
+    "IMG_4235.webp",
+    "IMG_4289.webp",
+    "IMG_4302.webp",
+    "IMG_4355.webp",
+    "IMG_4382.webp"
+  ];
+
+  const openLightbox = (index: number) => {
+    setCurrentImgIndex(index);
+    setLightboxOpen(true);
+  };
+
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+  };
+
+  const nextImage = () => {
+    setCurrentImgIndex((prev) => (prev + 1) % galleryImages.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImgIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+  };
+
 
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -97,9 +130,49 @@ export default function InvitationPage() {
     }
   };
 
+  // Estados para el formulario RSVP
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    guests: "1",
+    customGuests: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [copied, setCopied] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
   const handleRSVP = (e: React.FormEvent) => {
     e.preventDefault();
-    alert("RSVP Submitted Successfully!");
+    setIsSubmitting(true);
+
+    /*
+      emailjs.send(
+        'TU_SERVICE_ID', 
+        'TU_TEMPLATE_ID', 
+        {
+          from_name: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          guests: formData.guests === 'Other' ? formData.customGuests : formData.guests
+        }, 
+        'TU_PUBLIC_KEY'
+      )
+      .then(() => setSubmitStatus("success"))
+      .catch(() => setSubmitStatus("error"))
+      .finally(() => setIsSubmitting(false));
+    */
+
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setSubmitStatus("success");
+      setFormData({ name: "", phone: "", email: "", guests: "1", customGuests: "" }); // Limpia el form
+    }, 1500);
   };
 
   const togglePlay = () => {
@@ -109,12 +182,6 @@ export default function InvitationPage() {
       setIsPlaying(!isPlaying);
     }
   };
-
-  const images = [
-    "IMG_4176.webp", "IMG_4181.webp", "IMG_4185.webp", "IMG_4191.webp",
-    "IMG_4223.webp", "IMG_4235.webp", "IMG_4289.webp", "IMG_4302.webp",
-    "IMG_4319.webp", "IMG_4331.webp", "IMG_4355.webp", "IMG_4382.webp"
-  ];
 
   return (
     <main className="relative min-h-screen bg-[#FFFFF0] text-[#2F4F4F] font-sans">
@@ -185,7 +252,7 @@ export default function InvitationPage() {
             alt="Jennifer and Armando"
             fill
             sizes="100vw"
-            className="object-cover object-center brightness-75"
+            className="object-cover object-[45%_35%] md:object-center brightness-75"
             priority
           />
         </div>
@@ -384,63 +451,71 @@ export default function InvitationPage() {
 
       <section className="relative h-[200vh] w-full z-40 -mt-[100vh]">
         <div className="sticky top-0 h-[100dvh] w-full bg-[#047857] overflow-hidden shadow-[0_-30px_60px_rgba(0,0,0,0.8)]">
-
+          {/* Textura de fondo integrada más sutil */}
           <div
-            className="absolute inset-0 opacity-15 pointer-events-none bg-cover bg-center mix-blend-overlay"
+            className="absolute inset-0 opacity-[0.08] pointer-events-none bg-cover bg-center mix-blend-overlay"
             style={{ backgroundImage: "url('/img/hoja.webp')" }}
           ></div>
 
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 z-10 overflow-y-auto no-scrollbar">
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 md:p-10 z-10">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              viewport={{ once: false, amount: 0.2 }}
-              className="w-full max-w-2xl flex flex-col items-center text-center gap-10 pt-10 pb-20"
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              viewport={{ once: false, amount: 0.3 }}
+              className="w-full max-w-2xl flex flex-col items-center text-center py-12"
             >
-
-              <div className="w-full flex flex-col items-center">
-                <motion.div
-                  initial={{ scale: 0, rotate: -10 }}
-                  whileInView={{ scale: 1, rotate: 0 }}
-                  transition={{ type: "spring", delay: 0.2, duration: 1 }}
-                  className="relative w-100 h-100 md:w-64 md:h-64 mb-8 drop-shadow-2xl"
-                >
+              {/* Contenedor del Icono con distribución refinada */}
+              <motion.div
+                initial={{ scale: 0, rotate: -15, opacity: 0 }}
+                whileInView={{ scale: 1, rotate: 0, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 100, damping: 15, delay: 0.2 }}
+                className="relative flex items-center justify-center p-6 mb-12"
+              >
+                {/* Fondo sutil detrás del icono */}
+                <div className="absolute inset-0 bg-[#FFFFF0]/10 rounded-full blur-xl scale-125"></div>
+                
+                {/* El Icono: Ahora más pequeño, centrado y blanco */}
+                <div className="relative w-28 h-28 md:w-36 md:h-36 drop-shadow-[0_4px_10px_rgba(255,215,0,0.3)]">
                   <Image
-                    src="/img/dress.png"
-                    alt="Dress Code Icon"
+                    src="/img/dress.png" // Asume que el usuario subirá la imagen blanca generada aquí
+                    alt="Formal Attire Icon"
                     fill
-                    className="object-contain"
+                    className="object-contain" // Mantiene 'dress' y lo ajusta a blanco en CSS si fuera negro
                   />
-                </motion.div>
+                </div>
+              </motion.div>
 
+              {/* Títulos con mejor jerarquía y espaciado */}
+              <div className="flex flex-col items-center gap-2 mb-10 max-w-lg">
                 <motion.h2
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.8 }}
-                  className={`${greatVibes.className} text-5xl md:text-7xl text-[#FFD700] mb-4 drop-shadow-sm`}
+                  className={`${greatVibes.className} text-6xl md:text-[80px] text-[#FFD700] drop-shadow-md`}
                 >
                   Dress Code
                 </motion.h2>
 
                 <motion.p
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4, duration: 0.8 }}
-                  className="text-2xl md:text-3xl font-serif text-[#FFFFF0] uppercase tracking-wider mb-3"
+                  className="text-2xl md:text-3xl font-serif text-[#FFFFF0] uppercase tracking-[0.25em]"
                 >
                   Formal Attire
                 </motion.p>
-
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5, duration: 0.8 }}
-                  className="text-sm md:text-base font-light text-[#FFFFF0]/80 px-4 italic max-w-md leading-relaxed"
-                >
-                  Please dress formally to celebrate with us.
-                </motion.p>
               </div>
+
+              {/* Descripción sutil y bien espaciada */}
+              <motion.p
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+                className="text-base md:text-lg font-light text-[#FFFFF0]/90 px-6 max-w-lg leading-relaxed font-sans"
+              >
+                Please dress formally to celebrate with us.
+              </motion.p>
 
             </motion.div>
           </div>
@@ -549,10 +624,19 @@ export default function InvitationPage() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2, type: "spring" }}
-                className={`${greatVibes.className} text-6xl md:text-8xl text-[#047857] mb-8 md:mb-12 drop-shadow-sm leading-tight`}
+                className={`${greatVibes.className} text-6xl md:text-8xl text-[#047857] mb-4 md:mb-6 drop-shadow-sm leading-tight`}
               >
                 Accommodation
               </motion.h2>
+
+              <motion.p
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.8 }}
+                className="text-base md:text-lg font-light text-[#047857]/80 px-6 max-w-2xl leading-relaxed mb-8 md:mb-12"
+              >
+                For your comfort and convenience, we have selected these nearby options. We want you to rest well after celebrating with us!
+              </motion.p>
 
               <div className="w-full relative overflow-hidden rounded-2xl p-2 md:p-4 group">
                 <button
@@ -666,46 +750,222 @@ export default function InvitationPage() {
         </div>
       </section>
 
-      <section className="py-24 px-6 bg-[#047857] text-[#FFFFF0] text-center overflow-hidden">
-        <motion.div variants={fadeIn} initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.4 }} className="max-w-3xl mx-auto">
-          <motion.div animate={{ y: [0, -10, 0] }} transition={{ repeat: Infinity, duration: 3 }}>
-            <Gift size={48} className="mx-auto mb-6 text-[#FFD700]" />
+      <section className="relative h-[100vh] w-full overflow-hidden bg-[#047857] z-50 -mt-[100vh] shadow-[0_-30px_60px_rgba(0,0,0,0.8)] flex items-center justify-center p-6 text-[#FFFFF0] text-center">
+        
+        {/* Textura de fondo sutil (mix-blend para que se vea más integrado en el verde) */}
+        <div
+          className="absolute inset-0 opacity-10 pointer-events-none bg-cover bg-center mix-blend-overlay"
+          style={{ backgroundImage: "url('/img/hoja.webp')" }}
+        ></div>
+
+        {/* 1. CONTENEDOR MAESTRO (Staggered Children)
+          initial="hidden" and whileInView="visible" on this parent activate children variants.
+        */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.3 }} // Se reanima cada que sube
+          transition={{
+            staggerChildren: 0.2, // Tiempo entre la aparición de cada elemento (efecto dominó)
+          }}
+          className="relative max-w-3xl mx-auto z-10 flex flex-col items-center gap-6 md:gap-10 py-16 md:py-24 overflow-y-auto no-scrollbar"
+        >
+
+          {/* ITEM 1: ICONO (Entrada en giro + Animación continua de flote y rotación)
+          */}
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, scale: 0, rotate: -360 }, // Entrada súper exagerada
+              visible: { 
+                opacity: 1, scale: 1, rotate: 0,
+                transition: { type: "spring", stiffness: 120, damping: 10 } 
+              }
+            }}
+            className="w-full flex justify-center"
+          >
+            <motion.div 
+              /* Animación continua "High School Style" (flota y gira poquito) */
+              animate={{ 
+                y: [0, -15, 0], // Sube y baja
+                rotate: [-3, 3, -3], // Se menea de lado a lado
+              }} 
+              transition={{ 
+                duration: 4, // Lenta pero constante
+                repeat: Infinity, 
+                ease: "easeInOut" 
+              }}
+              className="drop-shadow-[0_4px_15px_rgba(255,215,0,0.4)]"
+            >
+              <Gift size={56} className="text-[#FFD700]" />
+            </motion.div>
           </motion.div>
-          <h2 className="text-4xl md:text-5xl font-serif mb-8">Honeymoon Fund</h2>
-          <p className="text-lg md:text-xl font-light leading-relaxed mb-10 text-gray-200">
+
+
+          {/* ITEM 2: TÍTULO (Entrada de salto + Efecto Wobble al hover)
+          */}
+          <motion.h2 
+            variants={{
+              hidden: { opacity: 0, y: -50 }, // Cae desde arriba
+              visible: { 
+                opacity: 1, y: 0, 
+                transition: { type: "spring", stiffness: 200 } 
+              }
+            }}
+            /* High School: Al pasar el mouse, tiembla violentamente (Wobble) */
+            whileHover={{ 
+              rotate: [-1, 1, -1, 1, 0], // Tiembla
+              scale: 1.03, // Crece tantito
+              transition: { duration: 0.3, ease: "easeInOut" }
+            }}
+            className={`${greatVibes.className} text-6xl md:text-8xl text-[#FFD700] drop-shadow-lg leading-tight`}
+          >
+            Honeymoon Fund
+          </motion.h2>
+
+
+          {/* ITEM 3: PÁRRAFO (Entrada lateral con blur)
+          */}
+          <motion.p 
+            variants={{
+              hidden: { opacity: 0, x: -50, filter: "blur(5px)" }, // Viene de la izquierda borroso
+              visible: { 
+                opacity: 1, x: 0, filter: "blur(0px)",
+                transition: { duration: 0.8, ease: "easeOut" } 
+              }
+            }}
+            className="text-lg md:text-xl font-sans font-light leading-relaxed text-[#FFFFF0] px-4 max-w-2xl"
+          >
             Your presence at our wedding is the greatest gift of all. However, if you wish to honor us with a gift, a contribution towards our dream honeymoon in Ireland would be greatly appreciated.
-          </p>
-          <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="bg-[#FFD700] text-[#064e3b] px-10 py-4 rounded-full font-bold text-lg hover:bg-white transition-colors shadow-lg">
-            Contribute Here
-          </motion.button>
+          </motion.p>
+
+
+          {/* ITEM 4: BOTÓN (Entrada de escala + Animación continua de Pulso de Color)
+          */}
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 30, scale: 0.8 }, // Sube y crece
+              visible: { 
+                opacity: 1, y: 0, scale: 1,
+                transition: { type: "spring", stiffness: 150, delay: 0.2 } // Un pequeño delay extra
+              }
+            }}
+          >
+            <motion.button 
+              onClick={() => alert("Bank details will be updated shortly! / ¡Los datos bancarios se actualizarán pronto!")}
+              
+              /* High School: PULSO de sombra color oro constante (Grita: ¡CLICK ME!) */
+              animate={{ 
+                boxShadow: [
+                  "0 0 0 0px rgba(255, 215, 0, 0.7)", 
+                  "0 0 0 12px rgba(255, 215, 0, 0)", // La sombra crece y se desvanece
+                  "0 0 0 0px rgba(255, 215, 0, 0)"
+                ],
+                scale: [1, 1.03, 1] // Pulsa de tamaño
+              }} 
+              transition={{ 
+                duration: 1.5, 
+                repeat: Infinity, 
+                repeatType: "loop", 
+                ease: "easeInOut" 
+              }}
+
+              whileHover={{ 
+                scale: 1.1, // Crece al hover
+                backgroundColor: "#FFFFF0", // Fondo Ivory
+                color: "#047857", // Texto verde
+                rotate: [0, -2, 2, -2, 0], // Pequeño jiggle al hover
+                transition: { duration: 0.4 }
+              }} 
+              whileTap={{ scale: 0.9 }} 
+              className="bg-[#FFD700] text-[#064e3b] px-12 py-5 rounded-full font-sans font-bold text-lg hover:shadow-2xl transition-all shadow-xl uppercase tracking-wider"
+            >
+              Details Coming Soon
+            </motion.button>
+          </motion.div>
+
         </motion.div>
       </section>
 
       <section className="py-24 px-4 bg-[#FFFFF0] overflow-hidden">
         <motion.div variants={fadeIn} initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.1 }} className="max-w-7xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-serif text-[#047857] mb-12 text-center">Gallery</h2>
+          <h2 className="text-4xl md:text-5xl font-serif text-[#047857] mb-12 text-center">Gallery Photos</h2>
 
           <div className="columns-2 md:columns-3 lg:columns-4 gap-4 w-full mx-auto">
-            {images.map((src, index) => (
+            {galleryImages.map((src, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 40, scale: 0.95 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: false, margin: "-50px" }}
                 transition={{ duration: 0.6, delay: (index % 3) * 0.15, ease: "easeOut" }}
+                onClick={() => openLightbox(index)}
                 className="break-inside-avoid relative rounded-xl overflow-hidden shadow-xl group mb-4 cursor-pointer"
               >
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 z-10"></div>
                 <Image
                   src={`/img/${src}`}
                   alt={`Gallery Image ${index + 1}`}
                   width={500}
                   height={700}
-                  className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700"
+                  className="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700"
                 />
               </motion.div>
             ))}
           </div>
         </motion.div>
+
+        <AnimatePresence>
+          {lightboxOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-sm flex items-center justify-center"
+            >
+              <button
+                onClick={closeLightbox}
+                className="absolute top-6 right-6 md:top-10 md:right-10 z-50 text-white hover:text-[#FFD700] transition-colors p-2"
+              >
+                <X size={36} />
+              </button>
+
+              <button
+                onClick={prevImage}
+                className="absolute left-2 md:left-10 top-1/2 -translate-y-1/2 z-50 text-white hover:text-[#FFD700] transition-colors p-2"
+              >
+                <ChevronLeft size={48} />
+              </button>
+
+              <motion.div
+                key={currentImgIndex}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
+                className="relative w-full max-w-5xl h-[80vh] mx-12 md:mx-24"
+              >
+                <Image
+                  src={`/img/${galleryImages[currentImgIndex]}`}
+                  alt="Enlarged Gallery Photo"
+                  fill
+                  className="object-contain"
+                />
+              </motion.div>
+
+              <button
+                onClick={nextImage}
+                className="absolute right-2 md:right-10 top-1/2 -translate-y-1/2 z-50 text-white hover:text-[#FFD700] transition-colors p-2"
+              >
+                <ChevronRight size={48} />
+              </button>
+
+              <div className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 text-white font-serif tracking-widest text-sm md:text-base">
+                {currentImgIndex + 1} / {galleryImages.length}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </section>
 
       <section className="py-24 px-6 bg-gray-50 relative overflow-hidden">
@@ -718,37 +978,160 @@ export default function InvitationPage() {
             <p className="text-gray-500">Please confirm your attendance</p>
           </div>
 
-          <form onSubmit={handleRSVP} className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-              <input type="text" required className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#047857] focus:border-transparent transition-all outline-none" placeholder="Your name" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-              <input type="tel" required className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#047857] focus:border-transparent transition-all outline-none" placeholder="Your phone number" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input type="email" required className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#047857] focus:border-transparent transition-all outline-none" placeholder="Your email address" />
-            </div>
+          {submitStatus === "success" ? (
+            <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-10">
+              <div className="w-20 h-20 bg-[#047857]/10 text-[#047857] rounded-full flex items-center justify-center mx-auto mb-4">
+                <Heart size={40} />
+              </div>
+              <h3 className="text-2xl font-serif text-[#047857] mb-2">Thank you!</h3>
+              <p className="text-gray-600">Your RSVP has been successfully received.</p>
+              
+              {/* Etiqueta para que el cliente sepa que es simulación */}
+              <motion.div 
+                animate={{ scale: [1, 1.05, 1] }} 
+                transition={{ repeat: Infinity, duration: 2 }}
+                className="inline-block mt-4 bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest shadow-sm"
+              >
+                (Simulated Response)
+              </motion.div>
 
-            <p className="text-center text-sm font-medium text-[#047857] bg-[#047857]/10 py-3 rounded-lg mt-6">
-              Respectfully, no children
-            </p>
+              <button onClick={() => setSubmitStatus("idle")} className="block mx-auto mt-8 text-[#047857] underline text-sm hover:text-[#064e3b] transition-colors">
+                Submit another response
+              </button>
+            </motion.div>
+          ) : (
+            <form onSubmit={handleRSVP} className="space-y-6">
+              {/* ... aquí sigue el resto de tu formulario normal ... */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                <input type="text" name="name" value={formData.name} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#047857] focus:border-transparent transition-all outline-none" placeholder="Your name" />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                  <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#047857] focus:border-transparent transition-all outline-none" placeholder="Your phone number" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <input type="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#047857] focus:border-transparent transition-all outline-none" placeholder="Your email address" />
+                </div>
+              </div>
 
-            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" className="w-full bg-[#047857] text-[#FFFFF0] py-4 rounded-lg font-bold text-lg hover:bg-[#064e3b] transition-colors shadow-lg mt-8">
-              Confirm
-            </motion.button>
-          </form>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Number of Guests</label>
+                <select name="guests" value={formData.guests} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#047857] focus:border-transparent transition-all outline-none bg-white">
+                  <option value="1">1 Guest</option>
+                  <option value="2">2 Guests</option>
+                  <option value="3">3 Guests</option>
+                  <option value="4">4 Guests</option>
+                  <option value="5">5 Guests</option>
+                  <option value="Other">Other (Please specify)</option>
+                </select>
+              </div>
+
+              {formData.guests === "Other" && (
+                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }}>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">How many guests?</label>
+                  <input type="number" name="customGuests" min="6" value={formData.customGuests} onChange={handleInputChange} required={formData.guests === "Other"} className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#047857] focus:border-transparent transition-all outline-none" placeholder="Enter number of guests" />
+                </motion.div>
+              )}
+
+              <p className="text-center text-sm font-medium text-[#047857] bg-[#047857]/10 py-3 rounded-lg mt-6">
+                Respectfully, no children
+              </p>
+
+              <motion.button 
+                whileHover={{ scale: isSubmitting ? 1 : 1.02 }} 
+                whileTap={{ scale: isSubmitting ? 1 : 0.98 }} 
+                disabled={isSubmitting}
+                type="submit" 
+                className={`w-full py-4 rounded-lg font-bold text-lg transition-colors shadow-lg mt-8 flex justify-center items-center ${isSubmitting ? 'bg-gray-400 text-white cursor-not-allowed' : 'bg-[#047857] text-[#FFFFF0] hover:bg-[#064e3b]'}`}
+              >
+                {isSubmitting ? 'Sending...' : 'Confirm'}
+              </motion.button>
+            </form>
+          )}
         </motion.div>
       </section>
 
-      <footer className="bg-[#064e3b] text-[#FFFFF0] py-12 text-center">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} className="mb-6 flex justify-center">
-          <Image src="/img/logo.png" alt="Logo" width={80} height={80} className="opacity-80" />
+      {/* --- SHARE MOMENTS & FOOTER --- */}
+      <footer className="relative bg-[#064e3b] text-[#FFFFF0] pt-40 pb-12 text-center flex flex-col items-center mt-32">
+        
+        {/* Tarjeta flotante de "Share your best moments" */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.3 }}
+          className="absolute -top-32 w-[90%] max-w-2xl bg-[#FFFFF0] text-[#9C7C38] p-10 md:p-16 rounded-sm shadow-2xl border-[12px] border-[#9C7C38]/20 flex flex-col items-center z-20"
+        >
+          {/* Textura de papel */}
+          <div
+            className="absolute inset-0 opacity-[0.15] pointer-events-none bg-cover bg-center mix-blend-overlay"
+            style={{ backgroundImage: "url('/img/hoja.webp')" }}
+          ></div>
+
+          <div className="relative z-10 flex flex-col items-center">
+            <p className="text-xl md:text-2xl font-serif text-[#9C7C38]/80 uppercase tracking-widest mb-2">
+              Share your best
+            </p>
+            <h3 className={`${greatVibes.className} text-6xl md:text-[5.5rem] text-[#9C7C38] mb-8 leading-none drop-shadow-sm`}>
+              Moments
+            </h3>
+
+            {/* Botón interactivo para copiar el hashtag */}
+            <motion.button
+              onClick={() => {
+                navigator.clipboard.writeText("#Jen&Armando2026");
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000); // Se borra a los 2 seg
+              }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex flex-col items-center gap-4 group cursor-pointer outline-none"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-[#9C7C38]/10 flex items-center justify-center group-hover:bg-[#9C7C38] group-hover:shadow-lg transition-all duration-300">
+                <Camera size={32} className="text-[#9C7C38] group-hover:text-[#FFFFF0] transition-colors" />
+              </div>
+
+              <div className="relative">
+                <p className="text-2xl md:text-4xl font-serif tracking-wider text-[#9C7C38] transition-colors group-hover:text-[#047857]">
+                  #Jen&Armando2026
+                </p>
+                
+                {/* Letrerito de copiado que sale flotando */}
+                <AnimatePresence>
+                  {copied && (
+                    <motion.span
+                      initial={{ opacity: 0, y: 10, scale: 0.8 }}
+                      animate={{ opacity: 1, y: -40, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      className="absolute left-1/2 -translate-x-1/2 top-0 bg-[#047857] text-[#FFFFF0] text-xs font-bold px-4 py-1.5 rounded-full shadow-lg tracking-widest uppercase"
+                    >
+                      Copied!
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </div>
+            </motion.button>
+            <p className="text-xs md:text-sm font-light mt-4 text-[#9C7C38]/60 uppercase tracking-widest">
+              Tap the hashtag to copy
+            </p>
+          </div>
         </motion.div>
-        <motion.h3 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false }} transition={{ delay: 0.2 }} className="text-3xl font-serif mb-4">Jennifer & Armando</motion.h3>
-        <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false }} transition={{ delay: 0.4 }} className="text-[#FFD700] tracking-widest font-light">#Jen&Armando2026</motion.p>
+
+        {/* Contenido normal del footer (Logo y nombres en el fondo verde) */}
+        <div className="mt-20 md:mt-16 w-full flex flex-col items-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} className="mb-6 flex justify-center">
+            <Image src="/img/logo.png" alt="Logo" width={80} height={80} className="opacity-80" />
+          </motion.div>
+          <motion.h3 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false }} transition={{ delay: 0.2 }} className="text-3xl font-serif mb-2">
+            Jennifer & Armando
+          </motion.h3>
+          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false }} transition={{ delay: 0.4 }} className="text-[#FFD700]/70 tracking-widest font-light text-sm uppercase">
+            Thank you for joining us
+          </motion.p>
+        </div>
       </footer>
     </main>
   );
