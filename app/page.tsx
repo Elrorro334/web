@@ -140,39 +140,139 @@ export default function InvitationPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [formErrors, setFormErrors] = useState({ name: "", phone: "", customGuests: "" });
+  const [apiMessage, setApiMessage] = useState("");
   const [copied, setCopied] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    // Limpia el error cuando el usuario empieza a escribir de nuevo
+    setFormErrors(prev => ({ ...prev, [name]: "" }));
+    setApiMessage("");
   };
 
-  const handleRSVP = (e: React.FormEvent) => {
+  // Función para validar campos
+  const validateForm = () => {
+    let isValid = true;
+    const errors = { name: "", phone: "", customGuests: "" };
+
+    // Validar nombre (solo letras, mín 3, máx 50)
+    if (formData.name.trim().length < 3 || formData.name.trim().length > 50) {
+      errors.name = "Name must be between 3 and 50 characters.";
+      isValid = false;
+    } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(formData.name)) {
+      errors.name = "Name can only contain letters.";
+      isValid = false;
+    }
+
+    // Validar teléfono (solo números y algunos caracteres de formato, 10 a 15 dígitos)
+    if (!/^[0-9+\-\s()]{10,15}$/.test(formData.phone.replace(/[^0-9]/g, ''))) {
+      errors.phone = "Please enter a valid phone number (10 to 15 digits).";
+      isValid = false;
+    }
+
+    // Validar custom guests (solo números, entre 6 y 20 máximo para que no se pasen de lanza)
+    if (formData.guests === "Other") {
+      const guestsNum = parseInt(formData.customGuests);
+      if (isNaN(guestsNum) || guestsNum < 6 || guestsNum > 20) {
+        errors.customGuests = "Please enter a valid number between 6 and 20.";
+        isValid = false;
+      }
+    }
+
+    setFormErrors(errors);
+    return isValid;
+  };
+
+  const handleRSVP = async (e: React.FormEvent) => {
     e.preventDefault();
+    setApiMessage("");
+    
+    // Si la validación falla, detenemos el envío
+    if (!validateForm()) return;
+
     setIsSubmitting(true);
 
-    /*
-      emailjs.send(
-        'TU_SERVICE_ID', 
-        'TU_TEMPLATE_ID', 
-        {
-          from_name: formData.name,
-          phone: formData.phone,
-          email: formData.email,
-          guests: formData.guests === 'Other' ? formData.customGuests : formData.guests
-        }, 
-        'TU_PUBLIC_KEY'
-      )
-      .then(() => setSubmitStatus("success"))
-      .catch(() => setSubmitStatus("error"))
-      .finally(() => setIsSubmitting(false));
-    */
+    const totalGuests = formData.guests === 'Other' ? formData.customGuests : formData.guests;
 
-    setTimeout(() => {
+    const emailTemplate = `
+      <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #2F4F4F; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+        
+        <div style="background-color: #047857; padding: 30px 20px; text-align: center; border-bottom: 4px solid #9C7C38;">
+          <h2 style="margin: 0; color: #FFFFF0; font-size: 26px; font-family: Georgia, serif; font-weight: normal; letter-spacing: 1px;">Wedding RSVP</h2>
+          <p style="margin: 8px 0 0 0; color: #FFD700; font-size: 14px; letter-spacing: 3px; text-transform: uppercase;">Jennifer & Armando</p>
+        </div>
+
+        <div style="padding: 30px; background-color: #FFFFF0;">
+          <p style="font-size: 16px; margin-top: 0; color: #4b5563;">Hello,</p>
+          <p style="font-size: 16px; color: #4b5563; line-height: 1.5;">You have received a new RSVP confirmation for the wedding. Here are the details:</p>
+
+          <div style="background-color: #ffffff; border-radius: 8px; padding: 20px; margin: 25px 0; border: 1px solid #e5e7eb;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 15px;">
+              <tr>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; width: 45%;"><strong style="color: #047857;">👤 Full Name:</strong></td>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; color: #1f2937;">${formData.name}</td>
+              </tr>
+              <tr>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6;"><strong style="color: #047857;">📞 Phone Number:</strong></td>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; color: #1f2937;">${formData.phone}</td>
+              </tr>
+              <tr>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6;"><strong style="color: #047857;">✉️ Email Address:</strong></td>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6;">
+                  <a href="mailto:${formData.email}" style="color: #047857; text-decoration: none;">${formData.email}</a>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 12px 0;"><strong style="color: #047857;">🎫 Guests Confirmed:</strong></td>
+                <td style="padding: 12px 0;">
+                  <span style="background-color: #9C7C38; color: #ffffff; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 14px;">
+                    ${totalGuests}
+                  </span>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div style="text-align: center; padding: 20px; background-color: #f9fafb; font-size: 12px; color: #9ca3af; border-top: 1px solid #e5e7eb;">
+          <p style="margin: 0;">This is an automated notification from your wedding website.</p>
+        </div>
+      </div>
+    `;
+
+    const payload = {
+      subject: `✅ RSVP Confirmed: ${formData.name} - ${totalGuests} guests`, // <--- TODO EN INGLÉS
+      html: emailTemplate,
+      replyToEmail: formData.email,
+      replyToName: formData.name
+    };
+
+    try {
+      const response = await fetch('/api/rsvp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      // Leemos la respuesta del PHP
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitStatus("success");
+        setFormData({ name: "", phone: "", email: "", guests: "1", customGuests: "" });
+      } else {
+        setSubmitStatus("error");
+        setApiMessage(data.error || "There was a problem sending your RSVP.");
+      }
+    } catch (error) {
+      console.error("Error enviando el RSVP:", error);
+      setSubmitStatus("error");
+      setApiMessage("Network error. Please check your connection and try again.");
+    } finally {
       setIsSubmitting(false);
-      setSubmitStatus("success");
-      setFormData({ name: "", phone: "", email: "", guests: "1", customGuests: "" }); // Limpia el form
-    }, 1500);
+    }
   };
 
   const togglePlay = () => {
@@ -984,37 +1084,63 @@ export default function InvitationPage() {
                 <Heart size={40} />
               </div>
               <h3 className="text-2xl font-serif text-[#047857] mb-2">Thank you!</h3>
-              <p className="text-gray-600">Your RSVP has been successfully received.</p>
+              <p className="text-gray-600">Your RSVP has been successfully sent to the couple.</p>
               
-              {/* Etiqueta para que el cliente sepa que es simulación */}
-              <motion.div 
-                animate={{ scale: [1, 1.05, 1] }} 
-                transition={{ repeat: Infinity, duration: 2 }}
-                className="inline-block mt-4 bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest shadow-sm"
-              >
-                (Simulated Response)
-              </motion.div>
-
               <button onClick={() => setSubmitStatus("idle")} className="block mx-auto mt-8 text-[#047857] underline text-sm hover:text-[#064e3b] transition-colors">
                 Submit another response
               </button>
             </motion.div>
           ) : (
-            <form onSubmit={handleRSVP} className="space-y-6">
-              {/* ... aquí sigue el resto de tu formulario normal ... */}
+            <form onSubmit={handleRSVP} className="space-y-6" noValidate>
+              {/* Alerta de error si falla la API */}
+              {submitStatus === "error" && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm mb-6">
+                  {apiMessage || "An unexpected error occurred. Please try again."}
+                </div>
+              )}
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                <input type="text" name="name" value={formData.name} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#047857] focus:border-transparent transition-all outline-none" placeholder="Your name" />
+                <input 
+                  type="text" 
+                  name="name" 
+                  value={formData.name} 
+                  onChange={handleInputChange} 
+                  required 
+                  maxLength={50}
+                  className={`w-full px-4 py-3 rounded-lg border ${formErrors.name ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-[#047857]'} focus:ring-2 focus:border-transparent transition-all outline-none`} 
+                  placeholder="Your full name" 
+                />
+                {formErrors.name && <p className="text-red-500 text-xs mt-1">{formErrors.name}</p>}
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                  <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#047857] focus:border-transparent transition-all outline-none" placeholder="Your phone number" />
+                  <input 
+                    type="tel" 
+                    name="phone" 
+                    value={formData.phone} 
+                    onChange={handleInputChange} 
+                    required 
+                    maxLength={15}
+                    className={`w-full px-4 py-3 rounded-lg border ${formErrors.phone ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-[#047857]'} focus:ring-2 focus:border-transparent transition-all outline-none`} 
+                    placeholder="E.g. 5512345678" 
+                  />
+                  {formErrors.phone && <p className="text-red-500 text-xs mt-1">{formErrors.phone}</p>}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                  <input type="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#047857] focus:border-transparent transition-all outline-none" placeholder="Your email address" />
+                  <input 
+                    type="email" 
+                    name="email" 
+                    value={formData.email} 
+                    onChange={handleInputChange} 
+                    required 
+                    maxLength={80}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#047857] focus:border-transparent transition-all outline-none" 
+                    placeholder="Your email address" 
+                  />
                 </div>
               </div>
 
@@ -1030,10 +1156,21 @@ export default function InvitationPage() {
                 </select>
               </div>
 
+              {/* Se muestra solo si seleccionan "Other" */}
               {formData.guests === "Other" && (
                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }}>
                   <label className="block text-sm font-medium text-gray-700 mb-1">How many guests?</label>
-                  <input type="number" name="customGuests" min="6" value={formData.customGuests} onChange={handleInputChange} required={formData.guests === "Other"} className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#047857] focus:border-transparent transition-all outline-none" placeholder="Enter number of guests" />
+                  <input 
+                    type="number" 
+                    name="customGuests" 
+                    min="6" 
+                    max="20"
+                    value={formData.customGuests} 
+                    onChange={handleInputChange} 
+                    className={`w-full px-4 py-3 rounded-lg border ${formErrors.customGuests ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-[#047857]'} focus:ring-2 focus:border-transparent transition-all outline-none`} 
+                    placeholder="Enter number of guests (6-20)" 
+                  />
+                  {formErrors.customGuests && <p className="text-red-500 text-xs mt-1">{formErrors.customGuests}</p>}
                 </motion.div>
               )}
 
@@ -1048,7 +1185,7 @@ export default function InvitationPage() {
                 type="submit" 
                 className={`w-full py-4 rounded-lg font-bold text-lg transition-colors shadow-lg mt-8 flex justify-center items-center ${isSubmitting ? 'bg-gray-400 text-white cursor-not-allowed' : 'bg-[#047857] text-[#FFFFF0] hover:bg-[#064e3b]'}`}
               >
-                {isSubmitting ? 'Sending...' : 'Confirm'}
+                {isSubmitting ? 'Sending RSVP...' : 'Confirm'}
               </motion.button>
             </form>
           )}
