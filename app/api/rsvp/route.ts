@@ -22,7 +22,8 @@ export async function POST(request: Request) {
     // 2. Build the email package
     const mailOptions = {
       from: '"Wedding Notifications" <invita4you@gmail.com>', // Sender display name
-      to: 'sanxcruro122@gmail.com , contacto@rodnix.com.mx',
+      //to: 'sanxcruro122@gmail.com , contacto@rodnix.com.mx',
+      to: 'greeneyeclovergirl@gmail.com, Armando.a.salinas@gmail.com',
       replyTo: replyToEmail ? `"${replyToName}" <${replyToEmail}>` : undefined,
       subject: subject,
       html: html

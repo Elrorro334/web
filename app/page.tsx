@@ -12,7 +12,8 @@ const greatVibes = Great_Vibes({
   subsets: ['latin']
 });
 
-const targetDate = new Date("2026-10-24T16:00:00").getTime();
+// El "-07:00" le dice a JavaScript exactamente en qué zona horaria es la fiesta
+const targetDate = new Date("2026-10-24T16:00:00-07:00").getTime();
 
 const fadeIn: Variants = {
   hidden: { opacity: 0, y: 50 },
@@ -73,25 +74,10 @@ export default function InvitationPage() {
 
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  //const timerRef = useRef<HTMLDivElement>(null);
-  //const blurRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll();
 
-  /*const { scrollYProgress: blurScroll } = useScroll({
-    target: blurRef,
-    offset: ["start start", "end start"]
-  });*/
-
-  /*const { scrollYProgress: timerScroll } = useScroll({
-    target: timerRef,
-    offset: ["start end", "end start"]
-  });*/
-
-  //const blurTransform = useTransform(blurScroll, [0, 1], ["blur(0px)", "blur(12px)"]);
   const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  //const timerOpacity = useTransform(timerScroll, [0.2, 0.5, 0.8, 1], [0, 1, 1, 0]);
-  //const timerScale = useTransform(timerScroll, [0.2, 0.5, 1], [0.8, 1, 1.1]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -130,7 +116,6 @@ export default function InvitationPage() {
     }
   };
 
-  // Estados para el formulario RSVP
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -147,12 +132,10 @@ export default function InvitationPage() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    // Limpia el error cuando el usuario empieza a escribir de nuevo
     setFormErrors(prev => ({ ...prev, [name]: "" }));
     setApiMessage("");
   };
 
-  // Función para validar campos
   const validateForm = () => {
     let isValid = true;
     const errors = { name: "", phone: "", customGuests: "" };
@@ -296,52 +279,103 @@ export default function InvitationPage() {
 
       <AnimatePresence>
         {!hasEntered && (
-          <motion.div
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, filter: "blur(10px)" }}
-            transition={{ duration: 1.2, ease: "easeInOut" }}
+          <div
             onClick={handleEnter}
-            className="fixed inset-0 z-[100] bg-[#047857] flex flex-col items-center justify-center cursor-pointer overflow-hidden"
+            className="fixed inset-0 z-[100] flex cursor-pointer overflow-hidden"
           >
+            {/* ================= MITAD IZQUIERDA (TELÓN IZQUIERDO) ================= */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-col items-center gap-12"
+              exit={{ x: "-100%" }}
+              transition={{ duration: 1.2, ease: [0.7, 0, 0.3, 1] }}
+              className="relative w-1/2 h-full overflow-hidden bg-[#033626]"
             >
-              <motion.div
-                animate={{ y: [0, -20, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                className="relative w-48 h-48 md:w-64 md:h-64"
-              >
-                <Image
-                  src="/img/letras.png"
-                  alt="J&A Initials"
-                  fill
-                  className="object-contain drop-shadow-2xl brightness-0 invert opacity-95"
-                  priority
-                />
-              </motion.div>
+              {/* Contenedor de pantalla completa anclado a la izquierda */}
+              <div className="absolute top-0 left-0 w-[100vw] h-[100dvh] flex flex-col items-center justify-center p-6 pt-12">
+                <Image src="/img/fondoInicio.jpg" alt="Welcome Background" fill className="object-cover object-center z-0" priority />
+                <div className="absolute inset-0 bg-black/10 z-0 pointer-events-none"></div>
 
-              <div className="flex gap-4 md:gap-5">
-                {["E", "N", "T", "E", "R"].map((letter, index) => (
-                  <motion.span
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 1.2,
-                      delay: 0.8 + (index * 0.1),
-                      ease: [0.16, 1, 0.3, 1]
-                    }}
-                    className="text-[#FFFFF0] text-xl md:text-2xl font-serif tracking-[0.4em] uppercase font-light drop-shadow-lg"
-                  >
-                    {letter}
-                  </motion.span>
-                ))}
+                <div className="relative z-10 flex flex-col items-center justify-center w-full">
+                  <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="relative w-60 h-60 md:w-80 md:h-80 mb-10 md:mb-14">
+                    {/* Le regresé el brightness-0 invert para forzar el blanco */}
+                    <Image src="/img/letras.png" alt="J&A Initials" fill className="object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)] brightness-0 invert" priority />
+                  </motion.div>
+
+                  {/* TEXTOS (Efecto Oro Brillante sin recortes) */}
+                  <div className="flex flex-col items-center text-center gap-4 mb-12">
+                    {/* Le agregamos p-2 y p-4 a las orillas para que las letras cursivas no choquen con la caja invisible de CSS */}
+                    <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 1 }} className="p-2 text-[10px] md:text-xs tracking-[0.35em] uppercase font-serif bg-gradient-to-r from-[#C69320] via-[#FDE047] to-[#C69320] text-transparent bg-clip-text">
+                      You are invited to
+                    </motion.p>
+                    <motion.h3 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 1 }} className="p-2 text-xl md:text-2xl tracking-[0.35em] uppercase font-serif font-light bg-gradient-to-r from-[#C69320] via-[#FDE047] to-[#C69320] text-transparent bg-clip-text">
+                      Live Something
+                    </motion.h3>
+                    <motion.h2 initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 1.2, duration: 1 }} className={`${greatVibes.className} p-4 text-6xl md:text-8xl mt-2 bg-gradient-to-r from-[#C69320] via-[#FDE047] to-[#C69320] text-transparent bg-clip-text drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]`}>
+                      Extraordinary
+                    </motion.h2>
+                  </div>
+
+                  {/* BOTÓN ENTER */}
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5, duration: 1 }} className="flex flex-col items-center gap-5 mt-6 group">
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-[1px] bg-gradient-to-r from-transparent to-[#D4AF37]"></div>
+                      <div className="text-sm font-serif tracking-[0.4em] ml-2 bg-gradient-to-r from-[#C69320] via-[#FDE047] to-[#C69320] text-transparent bg-clip-text">E N T E R</div>
+                      <div className="w-16 h-[1px] bg-gradient-to-l from-transparent to-[#D4AF37]"></div>
+                    </div>
+                    <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }} className="text-[#D4AF37]">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="rotate-180 drop-shadow-[0_0_8px_rgba(212,175,55,0.8)]"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="currentColor"/></svg>
+                    </motion.div>
+                  </motion.div>
+                </div>
               </div>
             </motion.div>
-          </motion.div>
+
+            {/* ================= MITAD DERECHA (TELÓN DERECHO) ================= */}
+            <motion.div
+              exit={{ x: "100%" }}
+              transition={{ duration: 1.2, ease: [0.7, 0, 0.3, 1] }}
+              className="relative w-1/2 h-full overflow-hidden bg-[#033626]"
+            >
+              {/* Contenedor de pantalla completa anclado a la derecha */}
+              <div className="absolute top-0 right-0 w-[100vw] h-[100dvh] flex flex-col items-center justify-center p-6 pt-12">
+                <Image src="/img/fondoInicio.jpg" alt="Welcome Background" fill className="object-cover object-center z-0" priority />
+                <div className="absolute inset-0 bg-black/10 z-0 pointer-events-none"></div>
+
+                <div className="relative z-10 flex flex-col items-center justify-center w-full">
+                                    <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="relative w-60 h-60 md:w-80 md:h-80 mb-10 md:mb-14">
+
+                    {/* Le regresé el brightness-0 invert para forzar el blanco */}
+                    <Image src="/img/letras.png" alt="J&A Initials" fill className="object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)] brightness-0 invert" priority />
+                  </motion.div>
+
+                  {/* TEXTOS (Efecto Oro Brillante sin recortes) */}
+                  <div className="flex flex-col items-center text-center gap-4 mb-12">
+                    {/* Le agregamos p-2 y p-4 a las orillas para que las letras cursivas no choquen con la caja invisible de CSS */}
+                    <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 1 }} className="p-2 text-[10px] md:text-xs tracking-[0.35em] uppercase font-serif bg-gradient-to-r from-[#C69320] via-[#FDE047] to-[#C69320] text-transparent bg-clip-text">
+                      You are invited to
+                    </motion.p>
+                    <motion.h3 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 1 }} className="p-2 text-xl md:text-2xl tracking-[0.35em] uppercase font-serif font-light bg-gradient-to-r from-[#C69320] via-[#FDE047] to-[#C69320] text-transparent bg-clip-text">
+                      Live Something
+                    </motion.h3>
+                    <motion.h2 initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 1.2, duration: 1 }} className={`${greatVibes.className} p-4 text-6xl md:text-8xl mt-2 bg-gradient-to-r from-[#C69320] via-[#FDE047] to-[#C69320] text-transparent bg-clip-text drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]`}>
+                      Extraordinary
+                    </motion.h2>
+                  </div>
+
+                  {/* BOTÓN ENTER */}
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5, duration: 1 }} className="flex flex-col items-center gap-5 mt-6 group">
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-[1px] bg-gradient-to-r from-transparent to-[#D4AF37]"></div>
+                      <div className="text-sm font-serif tracking-[0.4em] ml-2 bg-gradient-to-r from-[#C69320] via-[#FDE047] to-[#C69320] text-transparent bg-clip-text">E N T E R</div>
+                      <div className="w-16 h-[1px] bg-gradient-to-l from-transparent to-[#D4AF37]"></div>
+                    </div>
+                    <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }} className="text-[#D4AF37]">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="rotate-180 drop-shadow-[0_0_8px_rgba(212,175,55,0.8)]"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="currentColor"/></svg>
+                    </motion.div>
+                  </motion.div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
