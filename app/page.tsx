@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef} from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform, Variants, AnimatePresence } from "framer-motion";
-import { Play, Pause, MapPin, CalendarPlus, Gift, Music, Heart, Wine, Utensils, Sparkles, X, ChevronLeft, ChevronRight, Camera } from "lucide-react";
+import { Play, Pause, MapPin, CalendarPlus, Gift, Music, Heart, Wine, Utensils, Sparkles, X, ChevronLeft, ChevronRight, Camera} from "lucide-react";
 import { Great_Vibes } from 'next/font/google';
+import toast from 'react-hot-toast';
 
 
 const greatVibes = Great_Vibes({
@@ -115,6 +116,70 @@ export default function InvitationPage() {
         .catch((err) => console.log("Audio play failed:", err));
     }
   };
+
+  // States for Good Wishes
+    const [isWishModalOpen, setIsWishModalOpen] = useState(false);
+    const [wishData, setWishData] = useState({ name: "", message: "" });
+    const [isSendingWish, setIsSendingWish] = useState(false);
+
+    const handleWishChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setWishData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleSendWish = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!wishData.name.trim() || !wishData.message.trim()) {
+            toast.error("Please enter your name and message.", { style: { border: '1px solid #ef4444', padding: '16px', color: '#b91c1c' } });
+            return;
+        }
+
+        setIsSendingWish(true);
+        const loadingToast = toast.loading("Sending your good wishes...", {
+            style: { border: '1px solid #047857', padding: '16px', color: '#047857' }
+        });
+
+        // Email Template para los Buenos Deseos
+        const emailTemplate = `
+        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #2F4F4F; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+            <div style="background-color: #047857; padding: 30px 20px; text-align: center; border-bottom: 4px solid #9C7C38;">
+                <h2 style="margin: 0; color: #FFFFF0; font-size: 26px; font-family: Georgia, serif; font-weight: normal; letter-spacing: 1px;">New Good Wish! 💌</h2>
+                <p style="margin: 8px 0 0 0; color: #FFD700; font-size: 14px; letter-spacing: 3px; text-transform: uppercase;">Jennifer & Armando</p>
+            </div>
+            <div style="padding: 30px; background-color: #FFFFF0; text-align: center;">
+                <p style="font-size: 18px; color: #4b5563; font-style: italic;">"${wishData.message}"</p>
+                <p style="font-size: 16px; margin-top: 20px; color: #047857; font-weight: bold;">- ${wishData.name}</p>
+            </div>
+        </div>
+        `;
+
+        const payload = {
+            subject: `💌 New Good Wish from: ${wishData.name}`,
+            html: emailTemplate,
+            replyToName: wishData.name
+        };
+
+        try {
+            // Usamos tu misma API de RSVP que ya manda a los novios
+            const response = await fetch('/api/rsvp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                toast.success("Wishes sent successfully!", { id: loadingToast, duration: 5000, style: { border: '1px solid #10b981', padding: '16px', color: '#047857' } });
+                setIsWishModalOpen(false);
+                setWishData({ name: "", message: "" });
+            } else {
+                toast.error("There was a problem sending your message.", { id: loadingToast, duration: 5000 });
+            }
+        } catch (error) {
+            toast.error("Network error. Please try again.", { id: loadingToast, duration: 5000 });
+        } finally {
+            setIsSendingWish(false);
+        }
+    };
 
   const [formData, setFormData] = useState({
     name: "",
@@ -588,7 +653,7 @@ export default function InvitationPage() {
           {/* Textura de fondo integrada más sutil */}
           <div
             className="absolute inset-0 opacity-[0.08] pointer-events-none bg-cover bg-center mix-blend-overlay"
-            style={{ backgroundImage: "url('/img/hoja.webp')" }}
+            //style={{ backgroundImage: "url('/img/hoja.webp')" }}
           ></div>
 
           <div className="absolute inset-0 flex flex-col items-center justify-center p-6 md:p-10 z-10">
@@ -661,7 +726,7 @@ export default function InvitationPage() {
 
           <div
             className="absolute inset-0 opacity-15 pointer-events-none bg-cover bg-center mix-blend-overlay"
-            style={{ backgroundImage: "url('/img/hoja.webp')" }}
+           // style={{ backgroundImage: "url('/img/hoja.webp')" }}
           ></div>
 
           <div className="absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 z-10 overflow-y-auto no-scrollbar">
@@ -889,7 +954,7 @@ export default function InvitationPage() {
         {/* Textura de fondo sutil (mix-blend para que se vea más integrado en el verde) */}
         <div
           className="absolute inset-0 opacity-10 pointer-events-none bg-cover bg-center mix-blend-overlay"
-          style={{ backgroundImage: "url('/img/hoja.webp')" }}
+          
         ></div>
 
         {/* 1. CONTENEDOR MAESTRO (Staggered Children)
@@ -1102,6 +1167,218 @@ export default function InvitationPage() {
         </AnimatePresence>
       </section>
 
+      {/* === GOOD WISHES SECTION === */}
+            <section id="wishes" className="w-full flex flex-col md:flex-row min-h-[80vh]">
+                {/* Lado Izquierdo: Foto de los novios en Blanco y Negro */}
+                <div 
+                    className="w-full md:w-1/2 min-h-[40vh] md:min-h-full bg-cover bg-center grayscale" 
+                    style={{ backgroundImage: "url('/img/IMG_4235.webp')" }} 
+                ></div>
+
+                {/* Lado Derecho: Fondo Verde Oscuro */}
+                <div className="w-full md:w-1/2 bg-[#064e3b] flex items-center justify-center p-6 md:p-12 relative overflow-hidden">
+                    
+                    {/* Tarjeta Marfil */}
+                    <motion.div 
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                        transition={{ duration: 0.8 }}
+                        className="bg-[#FFFFF0] w-full max-w-lg p-10 md:p-14 shadow-2xl relative z-10 flex flex-col items-center text-center rounded-sm"
+                    >
+                        {/* Título */}
+                        <div className="mb-8">
+                            <h2 className={`${greatVibes.className} text-6xl md:text-7xl text-[#9C7C38] leading-none`}>
+                                Good
+                            </h2>
+                            <h3 className="text-2xl md:text-3xl font-serif text-[#9C7C38] tracking-[0.2em] uppercase mt-[-10px]">
+                                Wishes
+                            </h3>
+                        </div>
+
+                        {/* Mensaje de ejemplo */}
+                        <p className="text-[#047857] font-serif text-lg md:text-xl leading-relaxed mb-6">
+                            We wish you the best in this new chapter, may God bless you greatly.
+                        </p>
+                        
+                        {/* Firma de ejemplo */}
+                        <p className={`${greatVibes.className} text-4xl text-[#047857] mb-12`}>
+                            Carol Rodriguez
+                        </p>
+
+                        {/* Botón para abrir modal */}
+                        <motion.button 
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => setIsWishModalOpen(true)}
+                            className="border-2 border-[#9C7C38] text-[#9C7C38] px-8 py-3 rounded-sm font-serif tracking-widest uppercase hover:bg-[#9C7C38] hover:text-[#FFFFF0] transition-colors"
+                        >
+                            Send Good Wishes
+                        </motion.button>
+                    </motion.div>
+                </div>
+            </section>
+
+            {/* === MODAL DE GOOD WISHES === */}
+            <AnimatePresence>
+                {isWishModalOpen && (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 p-4"
+                    >
+                        <motion.div 
+                            initial={{ scale: 0.9, y: 20 }}
+                            animate={{ scale: 1, y: 0 }}
+                            exit={{ scale: 0.9, y: 20 }}
+                            className="bg-[#FFFFF0] w-full max-w-md p-8 rounded-xl shadow-2xl relative"
+                        >
+                            <h3 className="text-2xl font-serif text-[#047857] mb-6 border-b border-gray-200 pb-4">
+                                Send your good wishes
+                            </h3>
+                            
+                            <form onSubmit={handleSendWish} className="space-y-5">
+                                <div>
+                                    <input 
+                                        type="text" 
+                                        name="name"
+                                        value={wishData.name}
+                                        onChange={handleWishChange}
+                                        placeholder="Your name" 
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#9C7C38] focus:border-transparent outline-none bg-white text-gray-700"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <textarea 
+                                        name="message"
+                                        value={wishData.message}
+                                        onChange={handleWishChange}
+                                        placeholder="Your message" 
+                                        rows={4}
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#9C7C38] focus:border-transparent outline-none bg-white text-gray-700 resize-none"
+                                        required
+                                    ></textarea>
+                                </div>
+                                
+                                <div className="flex justify-end gap-4 pt-2">
+                                    <button 
+                                        type="button"
+                                        onClick={() => setIsWishModalOpen(false)}
+                                        className="px-6 py-2 border border-gray-300 text-gray-600 rounded-md hover:bg-gray-50 transition-colors font-medium"
+                                        disabled={isSendingWish}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button 
+                                        type="submit"
+                                        disabled={isSendingWish}
+                                        className={`px-6 py-2 rounded-md font-medium text-[#FFFFF0] transition-colors ${isSendingWish ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#9C7C38] hover:bg-[#7a6029]'}`}
+                                    >
+                                        {isSendingWish ? 'Sending...' : 'Send'}
+                                    </button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+      {/* === CONTACT SECTION === */}
+            <section id="contact" className="w-full flex flex-col md:flex-row min-h-[80vh]">
+                {/* Lado Izquierdo: Foto de los novios */}
+                {/* NOTA: Cambia '/img/fondoInicio.jpg' por la foto real de ellos al atardecer */}
+                <div 
+                    className="w-full md:w-1/2 min-h-[40vh] md:min-h-full bg-cover bg-center" 
+                    style={{ backgroundImage: "url('/img/IMG_4289.webp')" }} 
+                ></div>
+
+                {/* Lado Derecho: Fondo Verde Oscuro (Combina con el Footer) */}
+                <div className="w-full md:w-1/2 bg-[#064e3b] flex items-center justify-center p-6 md:p-12 relative overflow-hidden">
+                    
+                    {/* Tarjeta Marfil (Color principal de la invitación) */}
+                    <motion.div 
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                        transition={{ duration: 0.8 }}
+                        className="bg-[#FFFFF0] w-full max-w-lg p-10 md:p-14 shadow-2xl relative z-10 rounded-2xl"
+                    >
+                        {/* Título en Verde Esmeralda */}
+                        <h2 className={`${greatVibes.className} text-5xl md:text-7xl text-center text-[#047857] mb-12`}>
+                            Contacts
+                        </h2>
+
+                        {/* Contenedor de Iconos y Botones */}
+                        <div className="flex justify-around items-end mb-12 gap-4">
+                            
+                            {/* Columna Bride (Jennifer) */}
+                            <div className="flex flex-col items-center gap-6">
+                                {/* SVG Bride Icon en Dorado */}
+                                <svg viewBox="0 0 100 100" className="w-24 h-24 text-[#9C7C38]" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M50 20 C40 20 35 30 35 40 C35 50 40 55 50 55 C60 55 65 50 65 40 C65 30 60 20 50 20 Z" />
+                                    <path d="M35 40 C30 45 25 55 25 80 L75 80 C75 55 70 45 65 40" strokeDasharray="3 3"/>
+                                    <path d="M35 30 C30 30 25 40 25 80" />
+                                    <path d="M65 30 C70 30 75 40 75 80" />
+                                    <circle cx="50" cy="70" r="5" fill="currentColor" stroke="none" />
+                                    <circle cx="45" cy="65" r="3" fill="currentColor" stroke="none" />
+                                    <circle cx="55" cy="65" r="3" fill="currentColor" stroke="none" />
+                                </svg>
+                                
+                                {/* Botón WA Bride - Verde Esmeralda */}
+                                <motion.a 
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    href="https://wa.me/16615771855" 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="bg-[#047857] text-[#FFFFF0] px-6 py-3 rounded-xl flex items-center gap-2 hover:bg-[#033626] transition-colors shadow-md font-sans font-medium"
+                                >
+                                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                                    </svg>
+                                    Bride
+                                </motion.a>
+                            </div>
+
+                            {/* Columna Groom (Armando) */}
+                            <div className="flex flex-col items-center gap-6">
+                                {/* SVG Groom Icon en Dorado */}
+                                <svg viewBox="0 0 100 100" className="w-24 h-24 text-[#9C7C38]" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <circle cx="50" cy="30" r="15" />
+                                    <path d="M38 25 C45 20 55 20 62 25" strokeWidth="3" />
+                                    <path d="M30 80 C30 60 40 50 50 50 C60 50 70 60 70 80" />
+                                    <path d="M45 50 L45 80 M55 50 L55 80" />
+                                    <path d="M50 55 L45 65 L55 65 Z" />
+                                    <circle cx="50" cy="68" r="2" fill="currentColor" stroke="none" />
+                                </svg>
+                                
+                                {/* Botón WA Groom - Verde Esmeralda */}
+                                <motion.a 
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    href="https://wa.me/18056037801" 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="bg-[#047857] text-[#FFFFF0] px-6 py-3 rounded-xl flex items-center gap-2 hover:bg-[#033626] transition-colors shadow-md font-sans font-medium"
+                                >
+                                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                                    </svg>
+                                    Groom
+                                </motion.a>
+                            </div>
+                        </div>
+
+                        {/* Texto del Footer de la tarjeta */}
+                        <p className="text-center text-gray-500 font-sans text-sm mt-4">
+                            If in doubt, you can contact us!
+                        </p>
+                    </motion.div>
+                </div>
+            </section>
+
       <section className="py-24 px-6 bg-gray-50 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-64 h-64 bg-[#047857]/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#FFD700]/10 rounded-full blur-3xl translate-x-1/3 translate-y-1/3"></div>
@@ -1291,17 +1568,52 @@ export default function InvitationPage() {
           </div>
         </motion.div>
 
-        {/* Contenido normal del footer (Logo y nombres en el fondo verde) */}
+        {/* Contenido normal del footer (Logo del Planner con link y nombres en el fondo verde) */}
         <div className="mt-20 md:mt-16 w-full flex flex-col items-center">
+          
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} className="mb-6 flex justify-center">
-            <Image src="/img/logo.png" alt="Logo" width={80} height={80} className="opacity-80" />
+            {/* AQUÍ ESTÁ EL LINK: Envuelve a la imagen y abre en una pestaña nueva */}
+            <a 
+              href="https://invitaciones4you.com/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-block transition-transform duration-300 hover:scale-110 cursor-pointer"
+              title="Visit Invitaciones4You"
+            >
+              <Image 
+                src="/img/IMG_3326.PNG" 
+                alt="Invitaciones4You Logo" 
+                width={200} 
+                height={200} 
+                className="opacity-70 hover:opacity-100 transition-opacity duration-300 object-contain drop-shadow-md" 
+              />
+            </a>
           </motion.div>
+          
           <motion.h3 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false }} transition={{ delay: 0.2 }} className="text-3xl font-serif mb-2">
             Jennifer & Armando
           </motion.h3>
           <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false }} transition={{ delay: 0.4 }} className="text-[#FFD700]/70 tracking-widest font-light text-sm uppercase">
             Thank you for joining us
           </motion.p>
+
+          {/* === LA FIRMA DEL JEFE (RODNIX) === */}
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            whileInView={{ opacity: 1 }} 
+            viewport={{ once: false }} 
+            transition={{ delay: 0.6 }} 
+            className="mt-16 mb-2"
+          >
+            <a 
+              href="https://rodnix.com.mx" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-[10px] font-sans text-[#FFFFF0]/30 hover:text-[#FFD700] transition-colors duration-300 tracking-[0.2em] uppercase"
+            >
+              Developed by Rodnix
+            </a>
+          </motion.div>
         </div>
       </footer>
     </main>
