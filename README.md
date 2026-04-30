@@ -40,4 +40,4 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details[cite: 1].
 
 ---
-*Designed by [Invitaciones4You](https://invitaciones4you.com/)* | *Developed by [Rodnix](https://rodnix.com)*
+*Designed by [Invitaciones4You](https://invitaciones4you.com/)* | *Developed by [Rodnix](https://rodnix.com.mx)*
