@@ -16,6 +16,7 @@ const greatVibes = Great_Vibes({
 // El "-07:00" le dice a JavaScript exactamente en qué zona horaria es la fiesta
 const targetDate = new Date("2026-10-24T16:00:00-07:00").getTime();
 
+
 const fadeIn: Variants = {
   hidden: { opacity: 0, y: 50 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
@@ -40,6 +41,7 @@ export default function InvitationPage() {
   const [isMounted, setIsMounted] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
+  const [isWishSent, setIsWishSent] = useState(false);
 
   const galleryImages = [
     "IMG_4127.webp",
@@ -380,7 +382,7 @@ export default function InvitationPage() {
                   </div>
 
                   {/* BOTÓN ENTER */}
-                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5, duration: 1 }} className="flex flex-col items-center gap-5 mt-6 group">
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5, duration: 1 }} className="flex flex-col items-center gap-5 -mt-6 group">
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-[1px] bg-gradient-to-r from-transparent to-[#D4AF37]"></div>
                       <div className="text-sm font-serif tracking-[0.4em] ml-2 bg-gradient-to-r from-[#C69320] via-[#FDE047] to-[#C69320] text-transparent bg-clip-text">E N T E R</div>
@@ -427,16 +429,16 @@ export default function InvitationPage() {
                   </div>
 
                   {/* BOTÓN ENTER */}
-                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5, duration: 1 }} className="flex flex-col items-center gap-5 mt-6 group">
-                    <div className="flex items-center gap-4">
-                      <div className="w-16 h-[1px] bg-gradient-to-r from-transparent to-[#D4AF37]"></div>
-                      <div className="text-sm font-serif tracking-[0.4em] ml-2 bg-gradient-to-r from-[#C69320] via-[#FDE047] to-[#C69320] text-transparent bg-clip-text">E N T E R</div>
-                      <div className="w-16 h-[1px] bg-gradient-to-l from-transparent to-[#D4AF37]"></div>
-                    </div>
-                    <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }} className="text-[#D4AF37]">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="rotate-180 drop-shadow-[0_0_8px_rgba(212,175,55,0.8)]"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="currentColor" /></svg>
-                    </motion.div>
-                  </motion.div>
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5, duration: 1 }} className="flex flex-col items-center gap-5 -mt-6 group">
+  <div className="flex items-center gap-4">
+    <div className="w-16 h-[1px] bg-gradient-to-r from-transparent to-[#D4AF37]"></div>
+    <div className="text-sm font-serif tracking-[0.4em] ml-2 bg-gradient-to-r from-[#C69320] via-[#FDE047] to-[#C69320] text-transparent bg-clip-text">E N T E R</div>
+    <div className="w-16 h-[1px] bg-gradient-to-l from-transparent to-[#D4AF37]"></div>
+  </div>
+  <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }} className="text-[#D4AF37]">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="rotate-180 drop-shadow-[0_0_8px_rgba(212,175,55,0.8)]"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="currentColor" /></svg>
+  </motion.div>
+</motion.div>
                 </div>
               </div>
             </motion.div>
@@ -576,7 +578,9 @@ export default function InvitationPage() {
           </motion.div>
         </div>
 
-        <div className="relative z-10 w-full h-[100dvh] bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-4">
+        <div className="relative z-10 w-full h-[100dvh] bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-4"
+            style={{ backgroundImage: "url('/img/background.png')" }}
+            >
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -650,48 +654,50 @@ export default function InvitationPage() {
 
       <section className="relative h-[200vh] w-full z-40 -mt-[100vh]">
         <div className="sticky top-0 h-[100dvh] w-full bg-[#047857] overflow-hidden shadow-[0_-30px_60px_rgba(0,0,0,0.8)]">
+          
           {/* Textura de fondo integrada más sutil */}
           <div
-            className="absolute inset-0 opacity-[0.08] pointer-events-none bg-cover bg-center mix-blend-overlay"
-          //style={{ backgroundImage: "url('/img/hoja.webp')" }}
+            className="absolute inset-0 opacity-[0.05] pointer-events-none bg-cover bg-center mix-blend-overlay"
+            //style={{ backgroundImage: "url('/img/hoja.webp')" }}
           ></div>
 
           <div className="absolute inset-0 flex flex-col items-center justify-center p-6 md:p-10 z-10">
             <motion.div
-              initial={{ opacity: 0, y: 50 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
               viewport={{ once: false, amount: 0.3 }}
               className="w-full max-w-2xl flex flex-col items-center text-center py-12"
             >
-              {/* Contenedor del Icono con distribución refinada */}
+              
+              {/* Contenedor del Icono - AHORA RECTANGULAR PARA RESPETAR LA IMAGEN */}
               <motion.div
-                initial={{ scale: 0, rotate: -15, opacity: 0 }}
-                whileInView={{ scale: 1, rotate: 0, opacity: 1 }}
-                transition={{ type: "spring", stiffness: 100, damping: 15, delay: 0.2 }}
-                className="relative flex items-center justify-center p-6 mb-12"
+                initial={{ scale: 0.8, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 80, damping: 20, delay: 0.2 }}
+                className="relative flex items-center justify-center mb-10"
               >
-                {/* Fondo sutil detrás del icono */}
-                <div className="absolute inset-0 bg-[#FFFFF0]/10 rounded-full blur-xl scale-125"></div>
+                {/* Resplandor dorado más fuerte de fondo para que el traje negro resalte súper bien */}
+                <div className="absolute inset-0 bg-[#FFD700]/30 rounded-full blur-3xl scale-y-150 scale-x-110"></div>
 
-                {/* El Icono: Ahora más pequeño, centrado y blanco */}
-                <div className="relative w-28 h-28 md:w-36 md:h-36 drop-shadow-[0_4px_10px_rgba(255,215,0,0.3)]">
+                {/* El Icono: Sin el filtro blanco, mostrando sus colores originales */}
+                <div className="relative w-35 h-55 md:w-45 md:h-67 drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)]">
                   <Image
                     src="/img/dress.png"
                     alt="Formal Attire Icon"
                     fill
-                    className="object-contain brightness-0 invert drop-shadow-[0_4px_4px_rgba(0,0,0,0.3)]"
+                    className="object-contain" 
                   />
                 </div>
               </motion.div>
 
-              {/* Títulos con mejor jerarquía y espaciado */}
-              <div className="flex flex-col items-center gap-2 mb-10 max-w-lg">
+              {/* Títulos con mejor jerarquía */}
+              <div className="flex flex-col items-center text-center z-10">
                 <motion.h2
                   initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.8 }}
-                  className={`${greatVibes.className} text-6xl md:text-[80px] text-[#FFD700] drop-shadow-md`}
+                  className={`${greatVibes.className} text-6xl md:text-7xl text-[#FFD700] mb-2`}
                 >
                   Dress Code
                 </motion.h2>
@@ -700,21 +706,33 @@ export default function InvitationPage() {
                   initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4, duration: 0.8 }}
-                  className="text-2xl md:text-3xl font-serif text-[#FFFFF0] uppercase tracking-[0.25em]"
+                  className="text-xl md:text-2xl font-serif text-[#FFFFF0] uppercase tracking-[0.3em] mb-6"
                 >
                   Formal Attire
                 </motion.p>
-              </div>
 
-              {/* Descripción sutil y bien espaciada */}
-              <motion.p
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.8 }}
-                className="text-base md:text-lg font-light text-[#FFFFF0]/90 px-6 max-w-lg leading-relaxed font-sans"
-              >
-                Please dress formally to celebrate with us.
-              </motion.p>
+                {/* Separador elegante (Línea - Rombo - Línea) */}
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.5, duration: 0.8 }}
+                  className="flex items-center gap-4 mb-6"
+                >
+                  <div className="w-12 md:w-20 h-[1px] bg-gradient-to-r from-transparent to-[#FFD700]/50"></div>
+                  <div className="w-2 h-2 rotate-45 border border-[#FFD700]/50"></div>
+                  <div className="w-12 md:w-20 h-[1px] bg-gradient-to-l from-transparent to-[#FFD700]/50"></div>
+                </motion.div>
+
+                {/* Descripción fina */}
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ delay: 0.6, duration: 1 }}
+                  className="text-sm md:text-base font-light text-[#FFFFF0]/80 px-6 max-w-sm leading-relaxed font-sans tracking-wide"
+                >
+                  Please dress formally to celebrate with us.
+                </motion.p>
+              </div>
 
             </motion.div>
           </div>
@@ -807,7 +825,7 @@ export default function InvitationPage() {
 
           <div
             className="absolute inset-0 opacity-10 pointer-events-none bg-cover bg-center"
-            style={{ backgroundImage: "url('/img/hoja.webp')" }}
+            //style={{ backgroundImage: "url('/img/hoja.webp')" }}
           ></div>
 
           <div className="absolute inset-0 flex flex-col items-center justify-center p-4 z-10 overflow-y-auto no-scrollbar">
@@ -1206,15 +1224,36 @@ export default function InvitationPage() {
               Carol Rodriguez
             </p>
 
-            {/* Botón para abrir modal */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setIsWishModalOpen(true)}
-              className="border-2 border-[#9C7C38] text-[#9C7C38] px-8 py-3 rounded-sm font-serif tracking-widest uppercase hover:bg-[#9C7C38] hover:text-[#FFFFF0] transition-colors"
-            >
-              Send Good Wishes
-            </motion.button>
+            {/* Lógica: Mostrar botón O mensaje de éxito */}
+            {isWishSent ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                className="flex flex-col items-center"
+              >
+                <div className="w-16 h-16 bg-[#047857]/10 rounded-full flex items-center justify-center mb-4">
+                  <svg className="w-8 h-8 text-[#9C7C38]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </div>
+                <h4 className="font-serif text-[#047857] tracking-widest uppercase text-sm mb-1">
+                  Thank You!
+                </h4>
+                <p className="text-[#047857]/70 font-light text-xs uppercase tracking-wider">
+                  Your wishes have been sent
+                </p>
+              </motion.div>
+            ) : (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsWishModalOpen(true)}
+                className="border-2 border-[#9C7C38] text-[#9C7C38] px-8 py-3 rounded-sm font-serif tracking-widest uppercase hover:bg-[#9C7C38] hover:text-[#FFFFF0] transition-colors"
+              >
+                Send Good Wishes
+              </motion.button>
+            )}
           </motion.div>
         </div>
       </section>
