@@ -161,7 +161,7 @@ export default function InvitationPage() {
 
     try {
       // Usamos tu misma API de RSVP que ya manda a los novios
-      const response = await fetch('/api/rsvp', {
+      const response = await fetch('http://apimailer.somee.com/api/mail/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -298,7 +298,7 @@ export default function InvitationPage() {
     };
 
     try {
-      const response = await fetch('/api/rsvp', {
+      const response = await fetch('http://apimailer.somee.com/api/mail/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -586,7 +586,7 @@ export default function InvitationPage() {
           >
             <div
               className="absolute inset-0 opacity-15 pointer-events-none bg-cover bg-center"
-              style={{ backgroundImage: "url('/img/hoja.webp')" }}
+            //style={{ backgroundImage: "url('/img/hoja.webp')" }}
             ></div>
 
             <div className="relative z-10">
@@ -604,7 +604,7 @@ export default function InvitationPage() {
                   { title: "Ceremony", time: "4:00 PM", icon: Heart },
                   { title: "Cocktail", time: "5:00 PM", icon: Wine },
                   { title: "Dinner", time: "6:00 PM - 8:00 PM", icon: Utensils },
-                  { title: "Formalities", time: "9:00 PM", icon: Sparkles }
+                  { title: "Formalities", time: "8:00 PM", icon: Sparkles }
                 ].map((item, index) => (
                   <motion.div
                     key={index}
@@ -1580,13 +1580,7 @@ export default function InvitationPage() {
               className="inline-block transition-transform duration-300 hover:scale-110 cursor-pointer"
               title="Visit Invitaciones4You"
             >
-              <Image
-                src="/img/IMG_3326.PNG"
-                alt="Invitaciones4You Logo"
-                width={200}
-                height={200}
-                className="opacity-70 hover:opacity-100 transition-opacity duration-300 object-contain drop-shadow-md"
-              />
+
             </a>
           </motion.div>
 
@@ -1596,24 +1590,13 @@ export default function InvitationPage() {
           <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false }} transition={{ delay: 0.4 }} className="text-[#FFD700]/70 tracking-widest font-light text-sm uppercase">
             Thank you for joining us
           </motion.p>
-
-          {/* === LA FIRMA DEL JEFE (RODNIX) === */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: false }}
-            transition={{ delay: 0.6 }}
-            className="mt-16 mb-2"
-          >
-            <a
-              href="https://rodnix.com.mx"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[10px] font-sans text-[#FFFFF0]/30 hover:text-[#FFD700] transition-colors duration-300 tracking-[0.2em] uppercase"
-            >
-              Developed by Rodnix
-            </a>
-          </motion.div>
+          <Image
+            src="/img/IMG_3326.PNG"
+            alt="Invitaciones4You Logo"
+            width={200}
+            height={200}
+            className="opacity-70 hover:opacity-100 transition-opacity duration-300 object-contain drop-shadow-md"
+          />
         </div>
       </footer>
     </main>
