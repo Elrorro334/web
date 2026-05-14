@@ -1215,12 +1215,12 @@ export default function InvitationPage() {
 
             {/* Mensaje de ejemplo */}
             <p className="text-[#047857] font-serif text-lg md:text-xl leading-relaxed mb-6">
-              We wish you the best in this new chapter, may God bless you greatly.
+              Please send us a message of good wishes, we hope to see you soon!!
             </p>
 
             {/* Firma de ejemplo */}
             <p className={`${greatVibes.className} text-4xl text-[#047857] mb-12`}>
-              Carol Rodriguez
+              Jennifer & Armando
             </p>
 
             {/* Lógica: Mostrar botón O mensaje de éxito */}
