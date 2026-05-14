@@ -1017,9 +1017,6 @@ export default function InvitationPage() {
             </motion.div>
           </motion.div>
 
-
-          {/* ITEM 2: TÍTULO (Entrada de salto + Efecto Wobble al hover)
-          */}
           <motion.h2
             variants={{
               hidden: { opacity: 0, y: -50 }, // Cae desde arriba
@@ -1054,51 +1051,53 @@ export default function InvitationPage() {
           >
             Your presence at our wedding is the greatest gift of all. However, if you wish to honor us with a gift, a contribution towards our dream honeymoon in Ireland would be greatly appreciated.
           </motion.p>
+<motion.div
+  variants={{
+    hidden: { opacity: 0, y: 30, scale: 0.8 },
+    visible: {
+      opacity: 1, y: 0, scale: 1,
+      transition: { type: "spring", stiffness: 150, delay: 0.2 }
+    }
+  }}
+  className="flex flex-col items-center gap-8"
+>
+  <img 
+    src="img/IMG_4354.PNG" 
+    alt="Venmo QR" 
+    className="w-64 h-64 bg-white p-4 rounded-2xl shadow-xl"
+  />
 
-
-          {/* ITEM 4: BOTÓN (Entrada de escala + Animación continua de Pulso de Color)
-          */}
-          <motion.div
-            variants={{
-              hidden: { opacity: 0, y: 30, scale: 0.8 }, // Sube y crece
-              visible: {
-                opacity: 1, y: 0, scale: 1,
-                transition: { type: "spring", stiffness: 150, delay: 0.2 } // Un pequeño delay extra
-              }
-            }}
-          >
-            <motion.button
-              onClick={() => alert("Bank details will be updated shortly! / ¡Los datos bancarios se actualizarán pronto!")}
-
-              /* High School: PULSO de sombra color oro constante (Grita: ¡CLICK ME!) */
-              animate={{
-                boxShadow: [
-                  "0 0 0 0px rgba(255, 215, 0, 0.7)",
-                  "0 0 0 12px rgba(255, 215, 0, 0)", // La sombra crece y se desvanece
-                  "0 0 0 0px rgba(255, 215, 0, 0)"
-                ],
-                scale: [1, 1.03, 1] // Pulsa de tamaño
-              }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                repeatType: "loop",
-                ease: "easeInOut"
-              }}
-
-              whileHover={{
-                scale: 1.1, // Crece al hover
-                backgroundColor: "#FFFFF0", // Fondo Ivory
-                color: "#047857", // Texto verde
-                rotate: [0, -2, 2, -2, 0], // Pequeño jiggle al hover
-                transition: { duration: 0.4 }
-              }}
-              whileTap={{ scale: 0.9 }}
-              className="bg-[#FFD700] text-[#064e3b] px-12 py-5 rounded-full font-sans font-bold text-lg hover:shadow-2xl transition-all shadow-xl uppercase tracking-wider"
-            >
-              Details Coming Soon
-            </motion.button>
-          </motion.div>
+  <motion.a
+    href="https://venmo.com/u/Familia_Salinas"
+    target="_blank"
+    rel="noopener noreferrer"
+    animate={{
+      boxShadow: [
+        "0 0 0 0px rgba(255, 215, 0, 0.7)",
+        "0 0 0 12px rgba(255, 215, 0, 0)",
+        "0 0 0 0px rgba(255, 215, 0, 0)"
+      ],
+      scale: [1, 1.03, 1]
+    }}
+    transition={{
+      duration: 1.5,
+      repeat: Infinity,
+      repeatType: "loop",
+      ease: "easeInOut"
+    }}
+    whileHover={{
+      scale: 1.1,
+      backgroundColor: "#FFFFF0",
+      color: "#047857",
+      rotate: [0, -2, 2, -2, 0],
+      transition: { duration: 0.4 }
+    }}
+    whileTap={{ scale: 0.9 }}
+    className="bg-[#FFD700] text-[#064e3b] px-12 py-5 rounded-full font-sans font-bold text-lg hover:shadow-2xl transition-all shadow-xl uppercase tracking-wider text-center"
+  >
+    Contribute via Venmo
+  </motion.a>
+</motion.div>
 
         </motion.div>
       </section>
